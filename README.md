@@ -37,6 +37,18 @@
 
 - [ ] p-vals do not comply with results in sigir-paper
 
+### setup
+**`repro_eval`** can be installed as a Python package. Download the repository and it install with:
+```
+git clone https://github.com/irgroup/repro_eval
+pip install repro_eval/
+```
+
+Some of the examples include visualizations. Install the required packages with:
+```
+pip install -r example/requirements.txt
+```
+
 ### interface 
 
 Replicability test for single run:  
@@ -53,7 +65,6 @@ Reproducibility test for single run:
 
 Reproducibility test for baseline and advanced run:  
 `python -m repro_eval -rpd qrel_orig qrel_rpd orig_b orig_a rpd_b rpd_a`
-
 
 ##### example 
 
@@ -80,19 +91,6 @@ python -m repro_eval -t rpd  -m er -q ./example/data/qrels/core17.txt ./example/
 reproducibility (baseline only):  
 ```commandline
 python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001
-```
-
-
-### setup
-**`repro_eval`** can be installed as a Python package. Download the repository and it install with:
-```
-git clone https://github.com/irgroup/repro_eval
-pip install repro_eval/
-```
-
-Some of the examples include visualizations. Install the required packages with:
-```
-pip install -r example/requirements.txt
 ```
 
 ### misc & links
