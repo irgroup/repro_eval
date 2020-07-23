@@ -1,5 +1,5 @@
 from scipy.stats.stats import ttest_rel, ttest_ind
-from . import topic_scores
+from repro_eval.util import topic_scores
 
 
 def _ttest(orig_score, rep_score, rpl=True):
