@@ -40,53 +40,59 @@
 ### interface 
 
 Replicability test for single run:  
-`python eval.py -rpl qrel_orig orig_b rpl_b`
+`python -m repro_eval -rpl qrel_orig orig_b rpl_b`
 
 Replicability test for single run with specific measure:  
-`python eval.py -rpl -m rmse qrel_orig orig_b rpl_b`
+`python -m repro_eval -rpl -m rmse qrel_orig orig_b rpl_b`
 
 Replicability test for baseline and advanced run:  
-`python eval.py -rpl qrel_orig orig_b orig_a rpl_b rpl_a`
+`python -m repro_eval -rpl qrel_orig orig_b orig_a rpl_b rpl_a`
 
 Reproducibility test for single run:  
-`python eval.py -rpd qrel_orig qrel_rpd orig_b rpd_b`
+`python -m repro_eval -rpd qrel_orig qrel_rpd orig_b rpd_b`
 
 Reproducibility test for baseline and advanced run:  
-`python eval.py -rpd qrel_orig qrel_rpd orig_b orig_a rpd_b rpd_a`
+`python -m repro_eval -rpd qrel_orig qrel_rpd orig_b orig_a rpd_b rpd_a`
 
 
-##### Example 
+##### example 
 
 replicability (full, all measures):  
 ```commandline
-python eval.py -t rpl -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001 ./example/data/runs/rpl/14/irc_task1_WCrobust0405_001
+python -m repro_eval -t rpl -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001 ./example/data/runs/rpl/14/irc_task1_WCrobust0405_001
 ```
 
 replicability (full, rmse):  
 ```commandline
-python eval.py -t rpl  -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001 ./example/data/runs/rpl/14/irc_task1_WCrobust0405_001
+python -m repro_eval -t rpl  -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001 ./example/data/runs/rpl/14/irc_task1_WCrobust0405_001
 ```
 
 replicability (baseline only, rmse):  
 ```commandline
-python eval.py -t rpl  -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001
+python -m repro_eval -t rpl  -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001
 ```
 
 reproducibility (full):  
 ```commandline
-python eval.py -t rpd  -m er -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001 ./example/data/runs/rpd/14/irc_task2_WCrobust0405_001
+python -m repro_eval -t rpd  -m er -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001 ./example/data/runs/rpd/14/irc_task2_WCrobust0405_001
 ```
 
 reproducibility (baseline only):  
 ```commandline
-python eval.py -t rpd -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001
+python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001
 ```
 
 
 ### setup
-
+**`repro_eval`** can be installed as a Python package. Download the repository and it install with:
 ```
-pip install -r requirements.txt
+git clone https://github.com/irgroup/repro_eval
+pip install repro_eval/
+```
+
+Some of the examples include visualizations. Install the required packages with:
+```
+pip install -r example/requirements.txt
 ```
 
 ### misc & links
