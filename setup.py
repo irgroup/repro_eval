@@ -7,7 +7,7 @@ setup(name='repro_eval',
       author='Timo Breuer',
       author_email='timo.breuer@th-koeln.de',
       license='MIT',
-      packages=['repro_eval'],
+      packages=['repro_eval', 'repro_eval.measure', 'repro_eval.measure.external'],
       install_requires=[
           'pytrec_eval',
           'numpy',
