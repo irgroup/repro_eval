@@ -1,5 +1,5 @@
 from repro_eval.Evaluator import RplEvaluator
-from repro_eval.measure import arp
+from repro_eval.util import arp
 from repro_eval.util import print_base_adv, print_simple_line
 
 QREL = './data/qrels/core17.txt'

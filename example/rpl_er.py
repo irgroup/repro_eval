@@ -1,6 +1,5 @@
 import pytrec_eval
 from repro_eval.Evaluator import RplEvaluator
-from repro_eval.measure import arp, arp_scores
 from repro_eval.util import trim
 import pandas as pd
 from matplotlib import pyplot as plt

@@ -1,6 +1,6 @@
 from repro_eval.config import TRIM_THRESH, PHI
 from scipy.stats.stats import kendalltau
-from .external.rbo import rbo
+from repro_eval.measure.external.rbo import rbo
 
 
 def _ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH):

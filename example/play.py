@@ -1,5 +1,5 @@
 from repro_eval.Evaluator import RplEvaluator
-from repro_eval.measure import arp
+from repro_eval.measure.util import arp
 from repro_eval.util import print_base_adv, print_simple_line
 
 import pytrec_eval
