@@ -4,38 +4,7 @@
 
 - `rpl` replicated 
 - `rpd` reproduced
-- `rep` replicated/reproduced = repeated
-
-### todos
-- [x] cli
-- [x] pretty print
-- [x] interface extension for various runs
-- [ ] plots (see subtasks below)
-- [ ] code documentation
----
-- [x] implement kendall's tau
-- [x] implement rmse 
-- [x] implement arp
-- [x] implement rbo
-- [x] implement effect ratio
-- [x] implement delta relative improvement
-- [x] implement p-values of ttests
-- [x] implement absolute per-topic difference
-- [x] Evaluator class
-- [x] load runs in bulk
-- [x] use-case: arp scores vs. run constellations (rpl) (plot)
-- [ ] use-case: kendall's tau vs. cut-off (plot)
-- [x] use-case: rmse vs. cut-off (rpl) (plot) 
-- [x] use-case: er vs. run constellations (plot)
-- [ ] use-case: er vs. deltaRI (plot)
----
-- [ ] use-case: auto-generate pdf for overviews (bonus)
-- [ ] correlation analysis (bonus)
-- [ ] custom k for cut-offs? (bonus)
-
-### open issues
-
-- [ ] p-vals do not comply with results in sigir-paper
+- `rep` replicated/reproduced 
 
 ### setup
 **`repro_eval`** can be installed as a Python package. Download the repository and it install with:
@@ -44,7 +13,7 @@ git clone https://github.com/irgroup/repro_eval
 pip install repro_eval/
 ```
 
-Some of the examples include visualizations. Install the required packages with:
+Some of the examples include plots and visualizations. Install the required packages with:
 ```
 pip install -r example/requirements.txt
 ```
@@ -92,6 +61,37 @@ reproducibility (baseline only):
 ```commandline
 python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001
 ```
+
+### todos
+- [x] cli
+- [x] pretty print
+- [x] interface extension for various runs
+- [ ] plots (see subtasks below)
+- [ ] code documentation
+---
+- [x] implement kendall's tau
+- [x] implement rmse 
+- [x] implement arp
+- [x] implement rbo
+- [x] implement effect ratio
+- [x] implement delta relative improvement
+- [x] implement p-values of ttests
+- [x] implement absolute per-topic difference
+- [x] Evaluator class
+- [x] load runs in bulk
+- [x] use-case: arp scores vs. run constellations (rpl) (plot)
+- [ ] use-case: kendall's tau vs. cut-off (plot)
+- [x] use-case: rmse vs. cut-off (rpl) (plot) 
+- [x] use-case: er vs. run constellations (plot)
+- [ ] use-case: er vs. deltaRI (plot)
+---
+- [ ] use-case: auto-generate pdf for overviews (bonus)
+- [ ] correlation analysis (bonus)
+- [ ] custom k for cut-offs? (bonus)
+
+### open issues
+
+- [ ] p-vals do not comply with results in sigir-paper
 
 ### misc & links
 
