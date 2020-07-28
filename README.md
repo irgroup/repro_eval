@@ -83,7 +83,7 @@ python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt ./example/data/qr
 - [ ] use-case: kendall's tau vs. cut-off (plot)
 - [x] use-case: rmse vs. cut-off (rpl) (plot) 
 - [x] use-case: er vs. run constellations (plot)
-- [ ] use-case: er vs. deltaRI (plot)
+- [x] use-case: er vs. deltaRI (plot)
 ---
 - [ ] use-case: auto-generate pdf for overviews (bonus)
 - [ ] correlation analysis (bonus)

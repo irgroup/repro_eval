@@ -1,5 +1,5 @@
 from repro_eval.Evaluator import RplEvaluator
-from repro_eval.util import print_base_adv, print_simple_line, trim
+from repro_eval.util import trim
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(style="darkgrid")
@@ -9,9 +9,6 @@ import pytrec_eval
 QREL = './data/qrels/core17.txt'
 ORIG_B = './data/runs/orig/input.WCrobust04'
 ORIG_A = './data/runs/orig/input.WCrobust0405'
-RPL_B = './data/runs/rpl/14/irc_task1_WCrobust04_001'
-RPL_A = './data/runs/rpl/14/irc_task1_WCrobust0405_001'
-MEASURE = 'ndcg'
 
 
 runs_rpl = {
@@ -37,36 +34,6 @@ runs_rpl = {
         {'path': './data/runs/rpl/49/irc_task1_WCrobust0405_001'}
 }
 
-# def main():
-#
-#     rpl_eval = RplEvaluator(qrel_orig_path=QREL,
-#                             run_b_orig_path=ORIG_B,
-#                             run_b_rep_path=RPL_B)
-#
-#     rpl_eval.trim()
-#     rpl_eval.evaluate()
-#     rpl_eval.er()
-
-    # rpl_eval = RplEvaluator(qrel_orig_path=QREL,
-    #                         run_b_orig_path=ORIG_B,
-    #                         run_a_orig_path=ORIG_A,
-    #                         run_b_rep_path=RPL_B,
-    #                         run_a_rep_path=RPL_A)
-    #
-    # rpl_eval.trim()
-    # rpl_eval.evaluate()
-    #
-    # with open('../data/runs/rpl/15/irc_task1_WCrobust04_001') as f_run:
-    #     another_run = pytrec_eval.parse_run(f_run)
-    #
-    # rpl_eval.trim(run=another_run)
-    # scores = rpl_eval.evaluate(run=another_run)
-    #
-    # rmse_scores = rpl_eval.rmse(run_b_score=scores)
-    #
-    # print(rmse_scores)
-    # pass
-
 
 def main():
     rpl_eval = RplEvaluator(qrel_orig_path=QREL,
@@ -85,23 +52,23 @@ def main():
             info['scores'] = rpl_eval.evaluate(info['run'])
 
     dri_er = {
-        'wcr04_tf_1': {
+        'wcr_tf_1': {
             'er': rpl_eval.er(runs_rpl['rpl_wcr04_tf_1']['scores'], runs_rpl['rpl_wcr0405_tf_1']['scores']),
             'dri': rpl_eval.dri(runs_rpl['rpl_wcr04_tf_1']['scores'], runs_rpl['rpl_wcr0405_tf_1']['scores'])
         },
-        'wcr04_tf_2': {
+        'wcr_tf_2': {
             'er': rpl_eval.er(runs_rpl['rpl_wcr04_tf_2']['scores'], runs_rpl['rpl_wcr0405_tf_2']['scores']),
             'dri': rpl_eval.dri(runs_rpl['rpl_wcr04_tf_2']['scores'], runs_rpl['rpl_wcr0405_tf_2']['scores'])
         },
-        'wcr04_tf_3': {
+        'wcr_tf_3': {
             'er': rpl_eval.er(runs_rpl['rpl_wcr04_tf_3']['scores'], runs_rpl['rpl_wcr0405_tf_3']['scores']),
             'dri': rpl_eval.dri(runs_rpl['rpl_wcr04_tf_3']['scores'], runs_rpl['rpl_wcr0405_tf_3']['scores'])
         },
-        'wcr04_tf_4': {
+        'wcr_tf_4': {
             'er': rpl_eval.er(runs_rpl['rpl_wcr04_tf_4']['scores'], runs_rpl['rpl_wcr0405_tf_4']['scores']),
             'dri': rpl_eval.dri(runs_rpl['rpl_wcr04_tf_4']['scores'], runs_rpl['rpl_wcr0405_tf_4']['scores'])
         },
-        'wcr04_tf_5': {
+        'wcr_tf_5': {
             'er': rpl_eval.er(runs_rpl['rpl_wcr04_tf_5']['scores'], runs_rpl['rpl_wcr0405_tf_5']['scores']),
             'dri': rpl_eval.dri(runs_rpl['rpl_wcr04_tf_5']['scores'], runs_rpl['rpl_wcr0405_tf_5']['scores'])
         },
@@ -126,10 +93,8 @@ def main():
     plt.axvline(1, color='grey')
     plt.legend()
     plt.title('Replicability')
+    plt.savefig('data/plots/rpl_dri_vs_er.pdf', format='pdf', bbox_inches='tight')
     plt.show()
-
-
-    pass
 
 
 if __name__ == "__main__":
