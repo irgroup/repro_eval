@@ -66,7 +66,7 @@ python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt ./example/data/qr
 - [x] cli
 - [x] pretty print
 - [x] interface extension for various runs
-- [ ] plots (see subtasks below)
+- [x] plots (see subtasks below)
 - [ ] code documentation
 ---
 - [x] implement kendall's tau
@@ -79,13 +79,12 @@ python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt ./example/data/qr
 - [x] implement absolute per-topic difference
 - [x] Evaluator class
 - [x] load runs in bulk
-- [x] use-case: arp scores vs. run constellations (rpl) (plot)
-- [ ] use-case: kendall's tau vs. cut-off (plot)
-- [x] use-case: rmse vs. cut-off (rpl) (plot) 
-- [x] use-case: er vs. run constellations (plot)
-- [x] use-case: er vs. deltaRI (plot)
+- [x] plot: arp scores vs. run constellations (rpl) 
+- [x] plot: kendall's tau vs. cut-off (rpl) 
+- [x] plot: rmse vs. cut-off (rpl) 
+- [x] plot: er vs. run constellations 
+- [x] plot: er vs. deltaRI 
 ---
-- [ ] use-case: auto-generate pdf for overviews (bonus)
 - [ ] correlation analysis (bonus)
 - [ ] custom k for cut-offs? (bonus)
 
