@@ -75,6 +75,7 @@ def main():
             er = rpl_eval.er()
             for measure, value in er.items():
                 print_simple_line(measure, 'ER', value)
+            print()
 
         # DRI
         if 'dri' in measure_list or args.measure is None and len(args.runs) == 4:
