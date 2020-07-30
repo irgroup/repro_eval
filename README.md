@@ -1116,6 +1116,7 @@ set_F                    PVAL    BASE    0.0002
 - [x] interface extension for various runs
 - [x] plots (see subtasks below)
 - [ ] code documentation
+- [ ] adapt the naming to the [new ACM definitions](https://www.acm.org/publications/policies/artifact-review-badging)
 ---
 - [x] implement kendall's tau
 - [x] implement rmse 
