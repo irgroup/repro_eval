@@ -524,21 +524,142 @@ replicability (full, rmse):
 ```commandline
 python -m repro_eval -t rpl  -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001 ./example/data/runs/rpl/14/irc_task1_WCrobust0405_001
 ```
+<details>
+<summary>output</summary>
+
+```
+Root mean square error (RMSE)
+------------------------------------------------------------------
+map                      RMSE    BASE    0.0748    ADV     0.0419
+gm_map                   RMSE    BASE    0.8454    ADV     0.1257
+Rprec                    RMSE    BASE    0.0714    ADV     0.0369
+bpref                    RMSE    BASE    0.0624    ADV     0.0365
+recip_rank               RMSE    BASE    0.2495    ADV     0.1856
+iprec_at_recall_0.00     RMSE    BASE    0.1616    ADV     0.1012
+iprec_at_recall_0.10     RMSE    BASE    0.1364    ADV     0.0808
+iprec_at_recall_0.20     RMSE    BASE    0.1284    ADV     0.0805
+iprec_at_recall_0.30     RMSE    BASE    0.1240    ADV     0.0812
+iprec_at_recall_0.40     RMSE    BASE    0.1148    ADV     0.0730
+iprec_at_recall_0.50     RMSE    BASE    0.1315    ADV     0.0759
+iprec_at_recall_0.60     RMSE    BASE    0.1243    ADV     0.0750
+iprec_at_recall_0.70     RMSE    BASE    0.0793    ADV     0.0452
+iprec_at_recall_0.80     RMSE    BASE    0.0792    ADV     0.0674
+iprec_at_recall_0.90     RMSE    BASE    0.0888    ADV     0.0527
+iprec_at_recall_1.00     RMSE    BASE    0.0013    ADV     0.0034
+P_5                      RMSE    BASE    0.2173    ADV     0.1575
+P_10                     RMSE    BASE    0.2000    ADV     0.1020
+P_15                     RMSE    BASE    0.1218    ADV     0.0693
+P_20                     RMSE    BASE    0.1319    ADV     0.0738
+P_30                     RMSE    BASE    0.1396    ADV     0.0785
+P_100                    RMSE    BASE    0.0901    ADV     0.0553
+P_200                    RMSE    BASE    0.0620    ADV     0.0330
+P_500                    RMSE    BASE    0.0389    ADV     0.0179
+P_1000                   RMSE    BASE    0.0194    ADV     0.0103
+recall_5                 RMSE    BASE    0.0138    ADV     0.0154
+recall_10                RMSE    BASE    0.0268    ADV     0.0173
+recall_15                RMSE    BASE    0.0282    ADV     0.0108
+recall_20                RMSE    BASE    0.0364    ADV     0.0189
+recall_30                RMSE    BASE    0.0505    ADV     0.0269
+recall_100               RMSE    BASE    0.0710    ADV     0.0462
+recall_200               RMSE    BASE    0.0766    ADV     0.0408
+recall_500               RMSE    BASE    0.0916    ADV     0.0564
+recall_1000              RMSE    BASE    0.0776    ADV     0.0504
+infAP                    RMSE    BASE    0.0748    ADV     0.0419
+gm_bpref                 RMSE    BASE    1.2204    ADV     0.0859
+Rprec_mult_0.20          RMSE    BASE    0.1431    ADV     0.1009
+Rprec_mult_0.40          RMSE    BASE    0.1266    ADV     0.0713
+Rprec_mult_0.60          RMSE    BASE    0.1066    ADV     0.0506
+Rprec_mult_0.80          RMSE    BASE    0.0864    ADV     0.0447
+Rprec_mult_1.00          RMSE    BASE    0.0714    ADV     0.0369
+Rprec_mult_1.20          RMSE    BASE    0.0609    ADV     0.0286
+Rprec_mult_1.40          RMSE    BASE    0.0544    ADV     0.0273
+Rprec_mult_1.60          RMSE    BASE    0.0491    ADV     0.0256
+Rprec_mult_1.80          RMSE    BASE    0.0481    ADV     0.0258
+Rprec_mult_2.00          RMSE    BASE    0.0420    ADV     0.0240
+utility                  RMSE    BASE    38.8999    ADV     20.5621
+11pt_avg                 RMSE    BASE    0.0741    ADV     0.0398
+binG                     RMSE    BASE    0.0288    ADV     0.0219
+G                        RMSE    BASE    0.0219    ADV     0.0151
+ndcg                     RMSE    BASE    0.0742    ADV     0.0373
+ndcg_rel                 RMSE    BASE    0.0676    ADV     0.0389
+Rndcg                    RMSE    BASE    0.0729    ADV     0.0357
+ndcg_cut_5               RMSE    BASE    0.1809    ADV     0.1121
+ndcg_cut_10              RMSE    BASE    0.1521    ADV     0.0912
+ndcg_cut_15              RMSE    BASE    0.1150    ADV     0.0703
+ndcg_cut_20              RMSE    BASE    0.1100    ADV     0.0624
+ndcg_cut_30              RMSE    BASE    0.1108    ADV     0.0555
+ndcg_cut_100             RMSE    BASE    0.0906    ADV     0.0486
+ndcg_cut_200             RMSE    BASE    0.0793    ADV     0.0405
+ndcg_cut_500             RMSE    BASE    0.0809    ADV     0.0397
+ndcg_cut_1000            RMSE    BASE    0.0742    ADV     0.0373
+map_cut_5                RMSE    BASE    0.0103    ADV     0.0099
+map_cut_10               RMSE    BASE    0.0169    ADV     0.0168
+map_cut_15               RMSE    BASE    0.0200    ADV     0.0138
+map_cut_20               RMSE    BASE    0.0230    ADV     0.0177
+map_cut_30               RMSE    BASE    0.0318    ADV     0.0230
+map_cut_100              RMSE    BASE    0.0537    ADV     0.0331
+map_cut_200              RMSE    BASE    0.0623    ADV     0.0391
+map_cut_500              RMSE    BASE    0.0745    ADV     0.0419
+map_cut_1000             RMSE    BASE    0.0748    ADV     0.0419
+relative_P_5             RMSE    BASE    0.2173    ADV     0.1575
+relative_P_10            RMSE    BASE    0.2000    ADV     0.1020
+relative_P_15            RMSE    BASE    0.1219    ADV     0.0693
+relative_P_20            RMSE    BASE    0.1319    ADV     0.0738
+relative_P_30            RMSE    BASE    0.1398    ADV     0.0785
+relative_P_100           RMSE    BASE    0.1044    ADV     0.0656
+relative_P_200           RMSE    BASE    0.0896    ADV     0.0469
+relative_P_500           RMSE    BASE    0.0917    ADV     0.0564
+relative_P_1000          RMSE    BASE    0.0776    ADV     0.0504
+success_1                RMSE    BASE    0.4690    ADV     0.3464
+success_5                RMSE    BASE    0.2449
+success_10               RMSE    BASE    0.2449
+set_P                    RMSE    BASE    0.0194    ADV     0.0103
+set_relative_P           RMSE    BASE    0.0776    ADV     0.0504
+set_recall               RMSE    BASE    0.0776    ADV     0.0504
+set_map                  RMSE    BASE    0.0234    ADV     0.0127
+set_F                    RMSE    BASE    0.0288    ADV     0.0156
+
+```
+</details>
 
 replicability (baseline only, rmse):  
 ```commandline
 python -m repro_eval -t rpl  -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001
 ```
 
+<details>
+<summary>output</summary>
+
+```
+
+```
+</details>
+
 reproducibility (full):  
 ```commandline
 python -m repro_eval -t rpd  -m er -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001 ./example/data/runs/rpd/14/irc_task2_WCrobust0405_001
 ```
 
+<details>
+<summary>output</summary>
+
+```
+
+```
+</details>
+
 reproducibility (baseline only):  
 ```commandline
 python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001
 ```
+
+<details>
+<summary>output</summary>
+
+```
+
+```
+</details>
 
 ### todos
 - [x] cli
