@@ -2,8 +2,8 @@
 
 ### naming convention
 
-- `rpl` replicated 
 - `rpd` reproduced
+- `rpl` replicated 
 - `rep` replicated/reproduced 
 
 ### setup
@@ -20,27 +20,27 @@ pip install -r example/requirements.txt
 
 ### interface 
 
-Replicability test for single run:  
-`python -m repro_eval -t rpl -q qrel_orig -r orig_b rpl_b`
-
-Replicability test for baseline and advanced run:  
-`python -m repro_eval -t rpl -q qrel_orig -r orig_b orig_a rpl_b rpl_a`
-
-Replicability test for single run with specific measure:  
-`python -m repro_eval -t rpl -m rmse -q qrel_orig -r orig_b rpl_b`  
-whereas the measure can be `ktu`, `rmse`, `er`, `dri`, `ttest`.
-
 Reproducibility test for single run:  
-`python -m repro_eval -t rpd -q qrel_orig qrel_rpd -r orig_b rpd_b`
+`python -m repro_eval -t rpd -q qrel_orig -r orig_b rpd_b`
 
 Reproducibility test for baseline and advanced run:  
-`python -m repro_eval -t rpd -q qrel_orig qrel_rpd -r orig_b orig_a rpd_b rpd_a`
+`python -m repro_eval -t rpd -q qrel_orig -r orig_b orig_a rpd_b rpd_a`
+
+Reproducibility test for single run with specific measure:  
+`python -m repro_eval -t rpd -m rmse -q qrel_orig -r orig_b rpd_b`  
+whereas the measure can be `ktu`, `rmse`, `er`, `dri`, `ttest`.
+
+Replicability test for single run:  
+`python -m repro_eval -t rpl -q qrel_orig qrel_rpl -r orig_b rpl_b`
+
+Replicability test for baseline and advanced run:  
+`python -m repro_eval -t rpl -q qrel_orig qrel_rpl -r orig_b orig_a rpl_b rpl_a`
 
 ##### example 
 
-replicability (full, all measures):  
+reproducibility (full, all measures):  
 ```commandline
-python -m repro_eval -t rpl -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001 ./example/data/runs/rpl/14/irc_task1_WCrobust0405_001
+python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001 ./example/data/runs/rpd/14/irc_task1_WCrobust0405_001
 ```
 <details>
 <summary>output</summary>
@@ -520,9 +520,9 @@ set_F                    PVAL    BASE    0.6768    ADV     0.7968
 ```
 </details>
 
-replicability (full, rmse):  
+reproducibility (full, rmse):  
 ```commandline
-python -m repro_eval -t rpl -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001 ./example/data/runs/rpl/14/irc_task1_WCrobust0405_001
+python -m repro_eval -t rpd -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001 ./example/data/runs/rpd/14/irc_task1_WCrobust0405_001
 ```
 <details>
 <summary>output</summary>
@@ -622,9 +622,9 @@ set_F                    RMSE    BASE    0.0288    ADV     0.0156
 ```
 </details>
 
-replicability (baseline only, rmse):  
+reproducibility (baseline only, rmse):  
 ```commandline
-python -m repro_eval -t rpl -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001
+python -m repro_eval -t rpd -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001
 ```
 
 <details>
@@ -724,9 +724,9 @@ set_F                    RMSE    BASE    0.0288
 ```
 </details>
 
-reproducibility (full):  
+replicability (full):  
 ```commandline
-python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001 ./example/data/runs/rpd/14/irc_task2_WCrobust0405_001
+python -m repro_eval -t rpl -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task2_WCrobust04_001 ./example/data/runs/rpl/14/irc_task2_WCrobust0405_001
 ```
 
 <details>
@@ -1008,9 +1008,9 @@ set_F                    PVAL    BASE    0.0002    ADV     0.0001
 ```
 </details>
 
-reproducibility (baseline only):  
+replicability (baseline only):  
 ```commandline
-python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001
+python -m repro_eval -t rpl -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpl/14/irc_task2_WCrobust04_001
 ```
 
 <details>
