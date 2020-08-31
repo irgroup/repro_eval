@@ -1111,12 +1111,7 @@ set_F                    PVAL    BASE    0.0002
 </details>
 
 ### todos
-- [x] cli
-- [x] pretty print
-- [x] interface extension for various runs
-- [x] plots (see subtasks below)
 - [ ] code documentation
-- [ ] adapt the naming to the [new ACM definitions](https://www.acm.org/publications/policies/artifact-review-badging)
 ---
 - [x] implement kendall's tau
 - [x] implement rmse 
@@ -1133,9 +1128,11 @@ set_F                    PVAL    BASE    0.0002
 - [x] plot: rmse vs. cut-off (rpl) 
 - [x] plot: er vs. run constellations 
 - [x] plot: er vs. deltaRI 
----
-- [ ] correlation analysis (bonus)
-- [ ] custom k for cut-offs? (bonus)
+- [x] cli
+- [x] pretty print
+- [x] interface extension for various runs
+- [x] plots (see subtasks below)
+- [x] adapt the naming to the [new ACM definitions](https://www.acm.org/publications/policies/artifact-review-badging)
 
 ### open issues
 
