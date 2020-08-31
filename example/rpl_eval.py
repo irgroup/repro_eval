@@ -1,12 +1,12 @@
 from repro_eval.Evaluator import RplEvaluator
-from repro_eval.util import arp
 from repro_eval.util import print_base_adv, print_simple_line
 
 QREL = './data/qrels/core17.txt'
+QREL_RPL = './data/qrels/core18.txt'
 ORIG_B = './data/runs/orig/input.WCrobust04'
 ORIG_A = './data/runs/orig/input.WCrobust0405'
-RPL_B = './data/runs/rpl/14/irc_task1_WCrobust04_001'
-RPL_A = './data/runs/rpl/14/irc_task1_WCrobust0405_001'
+RPL_B = './data/runs/rpl/14/irc_task2_WCrobust04_001'
+RPL_A = './data/runs/rpl/14/irc_task2_WCrobust0405_001'
 MEASURE = 'ndcg'
 
 
@@ -15,33 +15,11 @@ def main():
                             run_b_orig_path=ORIG_B,
                             run_a_orig_path=ORIG_A,
                             run_b_rep_path=RPL_B,
-                            run_a_rep_path=RPL_A)
+                            run_a_rep_path=RPL_A,
+                            qrel_rpd_path=QREL_RPL)
 
     rpl_eval.trim()
     rpl_eval.evaluate()
-
-    # KTU
-    ktau = rpl_eval.ktau_union()
-    print("Kendall's tau Union (KTU)")
-    print('------------------------------------------------------------------')
-    for topic, value in ktau.get('baseline').items():
-        print_base_adv(topic, 'KTU', value, ktau.get('advanced').get(topic))
-    print_base_adv('ARP', 'KTU', arp(ktau.get('baseline')), arp(ktau.get('advanced')))
-
-    # RBO
-    rbo = rpl_eval.rbo()
-    print("Rank-biased Overlap (RBO)")
-    print('------------------------------------------------------------------')
-    for topic, value in rbo.get('baseline').items():
-        print_base_adv(topic, 'RBO', value, rbo.get('advanced').get(topic))
-    print_base_adv('ARP', 'RBO', arp(rbo.get('baseline')), arp(rbo.get('advanced')))
-
-    # RMSE
-    rmse = rpl_eval.rmse()
-    print("Root mean square error (RMSE)")
-    print('------------------------------------------------------------------')
-    for measure, value in rmse.get('baseline').items():
-        print_base_adv(measure, 'RMSE', value, rmse.get('advanced').get(measure))
 
     # ER
     print("Effect ratio (ER)")
@@ -59,7 +37,7 @@ def main():
 
     # ttest
     pvals = rpl_eval.ttest()
-    print("Two-tailed paired t-test (p-value)")
+    print("Two-tailed unpaired t-test (p-value)")
     print('------------------------------------------------------------------')
     for measure, value in pvals.get('baseline').items():
         print_base_adv(measure, 'PVAL', value, pvals.get('advanced').get(measure))

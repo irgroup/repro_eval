@@ -103,29 +103,29 @@ class Evaluator(object):
         else:
             print(ERR_MSG)
 
-    def _ttest(self, rpl=True, run_b_score=None, run_a_score=None):
+    def _ttest(self, rpd=True, run_b_score=None, run_a_score=None):
         if self.run_b_orig_score and self.run_b_rep_score:
             if run_b_score and run_a_score:
-                return {'baseline': ttest(self.run_b_orig_score, run_b_score, rpl=rpl),
-                        'advanced': ttest(self.run_a_orig_score, run_a_score, rpl=rpl)}
+                return {'baseline': ttest(self.run_b_orig_score, run_b_score, rpd=rpd),
+                        'advanced': ttest(self.run_a_orig_score, run_a_score, rpd=rpd)}
             if run_b_score:
-                return {'baseline': ttest(self.run_b_orig_score, run_b_score, rpl=rpl)}
+                return {'baseline': ttest(self.run_b_orig_score, run_b_score, rpd=rpd)}
             if self.run_a_orig_score and self.run_a_rep_score:
-                return {'baseline': ttest(self.run_b_orig_score, self.run_b_rep_score, rpl=rpl),
-                        'advanced': ttest(self.run_a_orig_score, self.run_a_rep_score, rpl=rpl)}
+                return {'baseline': ttest(self.run_b_orig_score, self.run_b_rep_score, rpd=rpd),
+                        'advanced': ttest(self.run_a_orig_score, self.run_a_rep_score, rpd=rpd)}
             else:
-                return {'baseline': ttest(self.run_b_orig_score, self.run_b_rep_score, rpl=rpl)}
+                return {'baseline': ttest(self.run_b_orig_score, self.run_b_rep_score, rpd=rpd)}
         else:
             print(ERR_MSG)
 
 
-class RplEvaluator(Evaluator):
+class RpdEvaluator(Evaluator):
 
     def evaluate(self, run=None):
         if run:
             return self.rel_eval.evaluate(run)
 
-        super(RplEvaluator, self).evaluate()
+        super(RpdEvaluator, self).evaluate()
         if self.run_b_rep:
             self.run_b_rep_score = self.rel_eval.evaluate(self.run_b_rep)
         if self.run_a_rep:
@@ -183,10 +183,10 @@ class RplEvaluator(Evaluator):
         return self._ttest(run_b_score=run_b_score, run_a_score=run_a_score)
 
 
-class RpdEvaluator(Evaluator):
+class RplEvaluator(Evaluator):
 
     def __init__(self, **kwargs):
-        super(RpdEvaluator, self).__init__(**kwargs)
+        super(RplEvaluator, self).__init__(**kwargs)
         self.qrel_rpd_path = kwargs.get('qrel_rpd_path', None)
 
         if self.qrel_rpd_path:
@@ -198,11 +198,11 @@ class RpdEvaluator(Evaluator):
         if run:
             return self.rel_eval_rpd.evaluate(run)
 
-        super(RpdEvaluator, self).evaluate()
+        super(RplEvaluator, self).evaluate()
         if self.run_b_rep:
             self.run_b_rep_score = self.rel_eval_rpd.evaluate(self.run_b_rep)
         if self.run_a_rep:
             self.run_a_rep_score = self.rel_eval_rpd.evaluate(self.run_a_rep)
 
     def ttest(self, run_b_score=None, run_a_score=None):
-        return self._ttest(rpl=False, run_b_score=run_b_score, run_a_score=run_a_score)
+        return self._ttest(rpd=False, run_b_score=run_b_score, run_a_score=run_a_score)

@@ -2,8 +2,8 @@ from scipy.stats.stats import ttest_rel, ttest_ind
 from repro_eval.util import topic_scores
 
 
-def _ttest(orig_score, rep_score, rpl=True):
-    if rpl: # paired two-tailed t-test
+def _ttest(orig_score, rep_score, rpd=True):
+    if rpd: # paired two-tailed t-test
         topic_scores_orig = topic_scores(orig_score)
         topic_scores_rep = topic_scores(rep_score)
 
@@ -18,5 +18,5 @@ def _ttest(orig_score, rep_score, rpl=True):
             yield measure, ttest_ind(scores, topic_scores_rep.get(measure)).pvalue
 
 
-def ttest(orig_score, rep_score, rpl=True):
-    return dict(_ttest(orig_score, rep_score, rpl=rpl))
+def ttest(orig_score, rep_score, rpd=True):
+    return dict(_ttest(orig_score, rep_score, rpd=rpd))
