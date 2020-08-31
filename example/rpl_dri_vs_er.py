@@ -7,31 +7,32 @@ sns.set(style="darkgrid")
 import pytrec_eval
 
 QREL = './data/qrels/core17.txt'
+QREL_RPL = './data/qrels/core18.txt'
 ORIG_B = './data/runs/orig/input.WCrobust04'
 ORIG_A = './data/runs/orig/input.WCrobust0405'
 
 
 runs_rpl = {
     'rpl_wcr04_tf_1':
-        {'path': './data/runs/rpl/45/irc_task1_WCrobust04_001'},
+        {'path': './data/runs/rpl/45/irc_task2_WCrobust04_001'},
     'rpl_wcr0405_tf_1':
-        {'path': './data/runs/rpl/45/irc_task1_WCrobust0405_001'},
+        {'path': './data/runs/rpl/45/irc_task2_WCrobust0405_001'},
     'rpl_wcr04_tf_2':
-        {'path': './data/runs/rpl/46/irc_task1_WCrobust04_001'},
+        {'path': './data/runs/rpl/46/irc_task2_WCrobust04_001'},
     'rpl_wcr0405_tf_2':
-        {'path': './data/runs/rpl/46/irc_task1_WCrobust0405_001'},
+        {'path': './data/runs/rpl/46/irc_task2_WCrobust0405_001'},
     'rpl_wcr04_tf_3':
-        {'path': './data/runs/rpl/47/irc_task1_WCrobust04_001'},
+        {'path': './data/runs/rpl/47/irc_task2_WCrobust04_001'},
     'rpl_wcr0405_tf_3':
-        {'path': './data/runs/rpl/47/irc_task1_WCrobust0405_001'},
+        {'path': './data/runs/rpl/47/irc_task2_WCrobust0405_001'},
     'rpl_wcr04_tf_4':
-        {'path': './data/runs/rpl/48/irc_task1_WCrobust04_001'},
+        {'path': './data/runs/rpl/48/irc_task2_WCrobust04_001'},
     'rpl_wcr0405_tf_4':
-        {'path': './data/runs/rpl/48/irc_task1_WCrobust0405_001'},
+        {'path': './data/runs/rpl/48/irc_task2_WCrobust0405_001'},
     'rpl_wcr04_tf_5':
-        {'path': './data/runs/rpl/49/irc_task1_WCrobust04_001'},
+        {'path': './data/runs/rpl/49/irc_task2_WCrobust04_001'},
     'rpl_wcr0405_tf_5':
-        {'path': './data/runs/rpl/49/irc_task1_WCrobust0405_001'}
+        {'path': './data/runs/rpl/49/irc_task2_WCrobust0405_001'}
 }
 
 
@@ -40,7 +41,8 @@ def main():
                             run_b_orig_path=ORIG_B,
                             run_a_orig_path=ORIG_A,
                             run_b_rep_path=None,
-                            run_a_rep_path=None)
+                            run_a_rep_path=None,
+                            qrel_rpd_path=QREL_RPL)
 
     rpl_eval.trim()
     rpl_eval.evaluate()
