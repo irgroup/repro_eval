@@ -38,7 +38,7 @@ Replicability test for baseline and advanced run:
 
 ##### example 
 
-reproducibility (full, all measures):  
+Reproducibility (full, all measures):  
 ```commandline
 python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001 ./example/data/runs/rpd/14/irc_task1_WCrobust0405_001
 ```
@@ -520,7 +520,7 @@ set_F                    PVAL    BASE    0.6768    ADV     0.7968
 ```
 </details>
 
-reproducibility (full, rmse):  
+Reproducibility (full, RMSE):  
 ```commandline
 python -m repro_eval -t rpd -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001 ./example/data/runs/rpd/14/irc_task1_WCrobust0405_001
 ```
@@ -622,7 +622,7 @@ set_F                    RMSE    BASE    0.0288    ADV     0.0156
 ```
 </details>
 
-reproducibility (baseline only, rmse):  
+Reproducibility (baseline only, RMSE):  
 ```commandline
 python -m repro_eval -t rpd -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001
 ```
@@ -724,7 +724,7 @@ set_F                    RMSE    BASE    0.0288
 ```
 </details>
 
-replicability (full):  
+Replicability (full):  
 ```commandline
 python -m repro_eval -t rpl -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task2_WCrobust04_001 ./example/data/runs/rpl/14/irc_task2_WCrobust0405_001
 ```
@@ -1008,7 +1008,7 @@ set_F                    PVAL    BASE    0.0002    ADV     0.0001
 ```
 </details>
 
-replicability (baseline only):  
+Replicability (baseline only):  
 ```commandline
 python -m repro_eval -t rpl -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpl/14/irc_task2_WCrobust04_001
 ```
