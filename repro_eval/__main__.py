@@ -1,3 +1,22 @@
+"""
+Use repro_eval from the command line with e.g.
+
+python -m repro_eval -t rpd -q qrel_orig -r orig_b rpd_b
+
+python -m repro_eval -t rpd -q qrel_orig -r orig_b orig_a rpd_b rpd_a
+
+python -m repro_eval -t rpd -m rmse -q qrel_orig -r orig_b rpd_b
+
+python -m repro_eval -t rpl -q qrel_orig qrel_rpl -r orig_b rpl_b
+
+python -m repro_eval -t rpl -q qrel_orig qrel_rpl -r orig_b orig_a rpl_b rpl_a
+
+after having installed the Python package.
+For other more specific examples also have a look at the README file.
+Depending on the provided parameters and input run files,
+evaluation measures will be printed.
+"""
+
 import argparse
 from repro_eval.Evaluator import RpdEvaluator, RplEvaluator
 from repro_eval.util import print_simple_line, print_base_adv
