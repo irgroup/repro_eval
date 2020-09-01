@@ -1110,6 +1110,14 @@ set_F                    PVAL    BASE    0.0002
 ```
 </details>
 
+### misc & links
+
+We use the implementation of the Rank-biased Overlap (RBO) by [dlukes](https://github.com/dlukes) at [620b84e](https://github.com/dlukes/rbo/tree/620b84e55e8b596e7fd9005cc8ca4b7a8522f2d6).
+We build up on the [pytrec_eval](https://github.com/cvangysel/pytrec_eval) interface for the underlying IR measures.
+We benefited from these codebases a lot and would like to express our gratitude for authors of these repositories.
+
+<!---
+
 ### todos
 - [ ] code documentation
 ---
@@ -1138,8 +1146,4 @@ set_F                    PVAL    BASE    0.0002
 
 - [ ] p-vals do not comply with results in sigir-paper
 
-### misc & links
-
-We use the implementation of the Rank-biased Overlap (RBO) by [dlukes](https://github.com/dlukes) at [620b84e](https://github.com/dlukes/rbo/tree/620b84e55e8b596e7fd9005cc8ca4b7a8522f2d6).
-We build up on the [pytrec_eval](https://github.com/cvangysel/pytrec_eval) interface for the underlying IR measures.
-We benefited from these codebases a lot and would like to express our gratitude for authors of these repositories.
+-->
