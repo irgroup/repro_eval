@@ -1,9 +1,19 @@
+"""Evaluation measures at the level of document orderings."""
+
 from repro_eval.config import TRIM_THRESH, PHI
 from scipy.stats.stats import kendalltau
 from repro_eval.measure.external.rbo import rbo
 
 
 def _ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH):
+    """
+    Helping function returning a generator to determine Kendall's tau Union (KTU) for all topics.
+
+    @param orig_run: The original run.
+    @param rep_run: The reproduced/replicated run.
+    @param trim_thresh: Threshold values for the number of documents to be compared.
+    @return: Generator with KTU values.
+    """
     for topic, docs in rep_run.items():
         orig_docs = list(orig_run.get(topic).keys())[:trim_thresh]
         rep_docs = list(rep_run.get(topic).keys())[:trim_thresh]
@@ -14,10 +24,31 @@ def _ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH):
 
 
 def ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH):
+    """
+    Determines the Kendall's tau Union (KTU) between the original and reproduced document orderings
+    according to the following paper:
+    Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
+    How to Measure the Reproducibility of System-oriented IR Experiments.
+    Proceedings of SIGIR, pages 349-358, 2020.
+
+    @param orig_run: The original run.
+    @param rep_run: The reproduced/replicated run.
+    @param trim_thresh: Threshold values for the number of documents to be compared.
+    @return: Dictionary with KTU values that compare the document orderings of the original and reproduced runs.
+    """
     return dict(_ktau_union(orig_run, rep_run, trim_thresh=trim_thresh))
 
 
 def _RBO(orig_run, rep_run, phi, trim_thresh=TRIM_THRESH):
+    """
+    Helping function returning a generator to determine the Rank-Biased Overlap (RBO) for all topics.
+
+    @param orig_run: The original run.
+    @param rep_run: The reproduced/replicated run.
+    @param phi: Parameter for top-heaviness of the RBO.
+    @param trim_thresh: Threshold values for the number of documents to be compared.
+    @return: Generator with RBO values.
+    """
     for topic, docs in rep_run.items():
         yield topic, rbo(list(rep_run.get(topic).keys())[:trim_thresh],
                          list(orig_run.get(topic).keys())[:trim_thresh],
@@ -25,4 +56,17 @@ def _RBO(orig_run, rep_run, phi, trim_thresh=TRIM_THRESH):
 
 
 def RBO(orig_run, rep_run, phi=PHI, trim_thresh=TRIM_THRESH):
+    """
+    Determines the Rank-Biased Overlap (RBO) between the original and reproduced document orderings
+    according to the following paper:
+    Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
+    How to Measure the Reproducibility of System-oriented IR Experiments.
+    Proceedings of SIGIR, pages 349-358, 2020.
+
+    @param orig_run: The original run.
+    @param rep_run: The reproduced/replicated run.
+    @param phi: Parameter for top-heaviness of the RBO.
+    @param trim_thresh: Threshold values for the number of documents to be compared.
+    @return: Dictionary with RBO values that compare the document orderings of the original and reproduced runs.
+    """
     return dict(_RBO(orig_run, rep_run, phi=phi, trim_thresh=trim_thresh))

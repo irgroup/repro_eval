@@ -1,12 +1,12 @@
-# repro-eval
+# repro_eval
 
-### naming convention
+### Naming convention
 
-- `rpl` replicated 
 - `rpd` reproduced
+- `rpl` replicated 
 - `rep` replicated/reproduced 
 
-### setup
+### Setup
 **`repro_eval`** can be installed as a Python package. Download the repository and it install with:
 ```
 git clone https://github.com/irgroup/repro_eval
@@ -18,32 +18,32 @@ Some of the examples include plots and visualizations. Install the required pack
 pip install -r example/requirements.txt
 ```
 
-### interface 
-
-Replicability test for single run:  
-`python -m repro_eval -t rpl -q qrel_orig -r orig_b rpl_b`
-
-Replicability test for baseline and advanced run:  
-`python -m repro_eval -t rpl -q qrel_orig -r orig_b orig_a rpl_b rpl_a`
-
-Replicability test for single run with specific measure:  
-`python -m repro_eval -t rpl -m rmse -q qrel_orig -r orig_b rpl_b`  
-whereas the measure can be `ktu`, `rmse`, `er`, `dri`, `ttest`.
+### Interface 
 
 Reproducibility test for single run:  
-`python -m repro_eval -t rpd -q qrel_orig qrel_rpd -r orig_b rpd_b`
+`python -m repro_eval -t rpd -q qrel_orig -r orig_b rpd_b`
 
 Reproducibility test for baseline and advanced run:  
-`python -m repro_eval -t rpd -q qrel_orig qrel_rpd -r orig_b orig_a rpd_b rpd_a`
+`python -m repro_eval -t rpd -q qrel_orig -r orig_b orig_a rpd_b rpd_a`
 
-##### example 
+Reproducibility test for single run with specific measure:  
+`python -m repro_eval -t rpd -m rmse -q qrel_orig -r orig_b rpd_b`  
+whereas the measure can be `ktu`, `rmse`, `er`, `dri`, `ttest`.
 
-replicability (full, all measures):  
+Replicability test for single run:  
+`python -m repro_eval -t rpl -q qrel_orig qrel_rpl -r orig_b rpl_b`
+
+Replicability test for baseline and advanced run:  
+`python -m repro_eval -t rpl -q qrel_orig qrel_rpl -r orig_b orig_a rpl_b rpl_a`
+
+##### Example 
+
+Reproducibility (full, all measures):  
 ```commandline
-python -m repro_eval -t rpl -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001 ./example/data/runs/rpl/14/irc_task1_WCrobust0405_001
+python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001 ./example/data/runs/rpd/14/irc_task1_WCrobust0405_001
 ```
 <details>
-<summary>output</summary>
+<summary>Output</summary>
 
 ```
 Kendall's tau Union (KTU)
@@ -520,12 +520,12 @@ set_F                    PVAL    BASE    0.6768    ADV     0.7968
 ```
 </details>
 
-replicability (full, rmse):  
+Reproducibility (full, RMSE):  
 ```commandline
-python -m repro_eval -t rpl -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001 ./example/data/runs/rpl/14/irc_task1_WCrobust0405_001
+python -m repro_eval -t rpd -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001 ./example/data/runs/rpd/14/irc_task1_WCrobust0405_001
 ```
 <details>
-<summary>output</summary>
+<summary>Output</summary>
 
 ```
 Root mean square error (RMSE)
@@ -622,13 +622,13 @@ set_F                    RMSE    BASE    0.0288    ADV     0.0156
 ```
 </details>
 
-replicability (baseline only, rmse):  
+Reproducibility (baseline only, RMSE):  
 ```commandline
-python -m repro_eval -t rpl -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpl/14/irc_task1_WCrobust04_001
+python -m repro_eval -t rpd -m rmse -q ./example/data/qrels/core17.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001
 ```
 
 <details>
-<summary>output</summary>
+<summary>Output</summary>
 
 ```
 Root mean square error (RMSE)
@@ -724,13 +724,13 @@ set_F                    RMSE    BASE    0.0288
 ```
 </details>
 
-reproducibility (full):  
+Replicability (full):  
 ```commandline
-python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001 ./example/data/runs/rpd/14/irc_task2_WCrobust0405_001
+python -m repro_eval -t rpl -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task2_WCrobust04_001 ./example/data/runs/rpl/14/irc_task2_WCrobust0405_001
 ```
 
 <details>
-<summary>output</summary>
+<summary>Output</summary>
 
 ```
 Effect ratio (ER)
@@ -1008,13 +1008,13 @@ set_F                    PVAL    BASE    0.0002    ADV     0.0001
 ```
 </details>
 
-reproducibility (baseline only):  
+Replicability (baseline only):  
 ```commandline
-python -m repro_eval -t rpd -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpd/14/irc_task2_WCrobust04_001
+python -m repro_eval -t rpl -q ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt -r ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpl/14/irc_task2_WCrobust04_001
 ```
 
 <details>
-<summary>output</summary>
+<summary>Output</summary>
 
 ```
 Two-tailed unpaired t-test (p-value)
@@ -1110,13 +1110,16 @@ set_F                    PVAL    BASE    0.0002
 ```
 </details>
 
+### Misc. & Links
+
+We use the implementation of the Rank-biased Overlap (RBO) by [dlukes](https://github.com/dlukes) at [620b84e](https://github.com/dlukes/rbo/tree/620b84e55e8b596e7fd9005cc8ca4b7a8522f2d6).
+We build up on the [pytrec_eval](https://github.com/cvangysel/pytrec_eval) interface for the underlying IR measures.
+We benefited from these codebases a lot and would like to express our gratitude for authors of these repositories.
+
+<!---
+
 ### todos
-- [x] cli
-- [x] pretty print
-- [x] interface extension for various runs
-- [x] plots (see subtasks below)
 - [ ] code documentation
-- [ ] adapt the naming to the [new ACM definitions](https://www.acm.org/publications/policies/artifact-review-badging)
 ---
 - [x] implement kendall's tau
 - [x] implement rmse 
@@ -1133,16 +1136,14 @@ set_F                    PVAL    BASE    0.0002
 - [x] plot: rmse vs. cut-off (rpl) 
 - [x] plot: er vs. run constellations 
 - [x] plot: er vs. deltaRI 
----
-- [ ] correlation analysis (bonus)
-- [ ] custom k for cut-offs? (bonus)
+- [x] cli
+- [x] pretty print
+- [x] interface extension for various runs
+- [x] plots (see subtasks below)
+- [x] adapt the naming to the [new ACM definitions](https://www.acm.org/publications/policies/artifact-review-badging)
 
 ### open issues
 
 - [ ] p-vals do not comply with results in sigir-paper
 
-### misc & links
-
-We use the implementation of the Rank-biased Overlap (RBO) by [dlukes](https://github.com/dlukes) at [620b84e](https://github.com/dlukes/rbo/tree/620b84e55e8b596e7fd9005cc8ca4b7a8522f2d6).
-We build up on the [pytrec_eval](https://github.com/cvangysel/pytrec_eval) interface for the underlying IR measures.
-We benefited from these codebases a lot and would like to express our gratitude for authors of these repositories.
+-->
