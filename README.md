@@ -1,5 +1,21 @@
 # repro_eval
 
+`repro_eval` is a collection of measures to evaluate the reproducibilty/replicability of system-oriented IR experiments. The measures were described and compared in this paper:
+
+  ```
+ @inproceedings{10.1145/3397271.3401036, 
+     author = {Breuer, Timo and Ferro, Nicola and Fuhr, Norbert and Maistro, Maria and Sakai, Tetsuya and Schaer, Philipp and Soboroff, Ian}, 
+     title = {How to Measure the Reproducibility of System-Oriented IR Experiments}, 
+     year = {2020},     
+     publisher = {Association for Computing Machinery}, 
+     address = {New York, NY, USA},     
+     doi = {10.1145/3397271.3401036}, 
+     booktitle = {Proceedings of the 43rd International ACM SIGIR Conference on Research and Development in Information Retrieval}, 
+     pages = {349–358}, 
+     series = {SIGIR '20} 
+ }
+ ```
+
 ### Naming convention
 
 - `rpd` reproduced
