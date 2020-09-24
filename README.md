@@ -23,7 +23,12 @@
 - `rep` replicated/reproduced 
 
 ### Setup
-**`repro_eval`** can be installed as a Python package. Download the repository and it install with:
+**`repro_eval`** can be installed as a Python package:
+```
+pip install git+https://github.com/irgroup/repro_eval.git
+```
+
+Alternatively, download the repository and it install with:
 ```
 git clone https://github.com/irgroup/repro_eval
 pip install repro_eval/
