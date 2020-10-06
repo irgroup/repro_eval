@@ -36,18 +36,22 @@ class Evaluator(object):
         if self.run_b_orig_path:
             with open(self.run_b_orig_path, 'r') as f_run:
                 self.run_b_orig = pytrec_eval.parse_run(f_run)
+                self.run_b_orig = {t: self.run_b_orig[t] for t in sorted(self.run_b_orig)}
 
         if self.run_a_orig_path:
             with open(self.run_a_orig_path, 'r') as f_run:
                 self.run_a_orig = pytrec_eval.parse_run(f_run)
+                self.run_a_orig = {t: self.run_a_orig[t] for t in sorted(self.run_a_orig)}
 
         if self.run_b_rep_path:
             with open(self.run_b_rep_path, 'r') as f_run:
                 self.run_b_rep = pytrec_eval.parse_run(f_run)
+                self.run_b_rep = {t: self.run_b_rep[t] for t in sorted(self.run_b_rep)}
 
         if self.run_a_rep_path:
             with open(self.run_a_rep_path, 'r') as f_run:
                 self.run_a_rep = pytrec_eval.parse_run(f_run)
+                self.run_a_rep = {t: self.run_a_rep[t] for t in sorted(self.run_a_rep)}
 
     def trim(self, t=None, run=None):
         """
