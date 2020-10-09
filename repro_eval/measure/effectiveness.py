@@ -3,15 +3,17 @@
 import numpy as np
 from math import sqrt
 from copy import deepcopy
+from tqdm import tqdm
 from repro_eval.config import exclude
 
 
-def _rmse(orig_score, rep_core):
+def _rmse(orig_score, rep_core, pbar=False):
     """
     Helping function returning a generator to determine the Root Mean Square Error (RMSE) for all topics.
 
     @param orig_score: The original scores.
     @param rep_core: The reproduced/replicated scores.
+    @param pbar: Boolean value indicating if progress bar should be printed.
     @return: Generator with RMSE values.
     """
     orig_cp = deepcopy(orig_score)
@@ -20,14 +22,16 @@ def _rmse(orig_score, rep_core):
     topics = orig_cp.keys()
     measures_valid = [m for m in measures_all if m not in exclude]
 
-    for measure in measures_valid:
+    measures = tqdm(measures_valid) if pbar else measures_valid
+
+    for measure in measures:
         orig_measure = np.array([orig_cp.get(topic).get(measure) for topic in topics])
         rpl_measure = np.array([rep_cp.get(topic).get(measure) for topic in topics])
         diff = orig_measure - rpl_measure
         yield measure, sqrt(sum(np.square(diff))/len(diff))
 
 
-def rmse(orig_score, rep_score):
+def rmse(orig_score, rep_score, pbar=False):
     """
     Determines the Root Mean Square Error (RMSE) between the original and reproduced topic scores
     according to the following paper:
@@ -37,6 +41,7 @@ def rmse(orig_score, rep_score):
 
     @param orig_score: The original scores.
     @param rep_core: The reproduced/replicated scores.
+    @param pbar: Boolean value indicating if progress bar should be printed.
     @return: Dictionary with RMSE values that measure the closeness between the original and reproduced topic scores.
     """
-    return dict(_rmse(orig_score, rep_score))
+    return dict(_rmse(orig_score, rep_score, pbar=pbar))

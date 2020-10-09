@@ -102,7 +102,7 @@ class Evaluator(object):
         if self.run_a_orig:
             self.run_a_orig_score = self.rel_eval.evaluate(self.run_a_orig)
 
-    def er(self, run_b_score=None, run_a_score=None):
+    def er(self, run_b_score=None, run_a_score=None, print_feedback=False):
         """
         Determines the Effect Ratio (ER) according to the following paper:
         Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
@@ -116,18 +116,22 @@ class Evaluator(object):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
+        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
         @return: Dictionary containing the ER values for the specified run combination.
         """
+        if print_feedback:
+            print('Determining Effect Ratio (ER)')
+
         if self.run_b_orig_score and self.run_a_orig_score and run_b_score and run_a_score:
             return ER(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
-                      rep_score_b=run_b_score, rep_score_a=run_a_score)
+                      rep_score_b=run_b_score, rep_score_a=run_a_score, pbar=print_feedback)
         if self.run_b_orig_score and self.run_a_orig_score and self.run_b_rep_score and self.run_a_rep_score:
             return ER(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
-                      rep_score_b=self.run_b_rep_score, rep_score_a=self.run_a_rep_score)
+                      rep_score_b=self.run_b_rep_score, rep_score_a=self.run_a_rep_score, pbar=print_feedback)
         else:
             print(ERR_MSG)
 
-    def dri(self, run_b_score=None, run_a_score=None):
+    def dri(self, run_b_score=None, run_a_score=None, print_feedback=False):
         """
         Determines the Delta Relative Improvement (DeltaRI) according to the following paper:
         Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
@@ -141,18 +145,21 @@ class Evaluator(object):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
+        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
         @return: Dictionary containing the DRI values for the specified run combination.
         """
+        if print_feedback:
+            print('Determining Delta Relative Improvement (DRI)')
         if self.run_b_orig_score and self.run_a_orig_score and run_b_score and run_a_score:
             return deltaRI(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
-                           rep_score_b=run_b_score, rep_score_a=run_a_score)
+                           rep_score_b=run_b_score, rep_score_a=run_a_score, pbar=print_feedback)
         if self.run_b_orig_score and self.run_a_orig_score and self.run_b_rep_score and self.run_a_rep_score:
             return deltaRI(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
-                           rep_score_b=self.run_b_rep_score, rep_score_a=self.run_a_rep_score)
+                           rep_score_b=self.run_b_rep_score, rep_score_a=self.run_a_rep_score, pbar=print_feedback)
         else:
             print(ERR_MSG)
 
-    def _ttest(self, rpd=True, run_b_score=None, run_a_score=None):
+    def _ttest(self, rpd=True, run_b_score=None, run_a_score=None, print_feedback=False):
         """
         Conducts either a paired (reproducibility) or unpaired (replicability) two-sided t-test according to the following paper:
         Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
@@ -164,19 +171,28 @@ class Evaluator(object):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
+        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
         @return: Dictionary with p-values that compare the score distributions of the baseline and advanced run.
         """
         if self.run_b_orig_score and self.run_b_rep_score:
             if run_b_score and run_a_score:
-                return {'baseline': ttest(self.run_b_orig_score, run_b_score, rpd=rpd),
-                        'advanced': ttest(self.run_a_orig_score, run_a_score, rpd=rpd)}
+                if print_feedback:
+                    print('Determining p-values of t-test for baseline and advanced run.')
+                return {'baseline': ttest(self.run_b_orig_score, run_b_score, rpd=rpd, pbar=print_feedback),
+                        'advanced': ttest(self.run_a_orig_score, run_a_score, rpd=rpd, pbar=print_feedback)}
             if run_b_score:
-                return {'baseline': ttest(self.run_b_orig_score, run_b_score, rpd=rpd)}
+                if print_feedback:
+                    print('Determining p-values of t-test for baseline run.')
+                return {'baseline': ttest(self.run_b_orig_score, run_b_score, rpd=rpd, pbar=print_feedback)}
             if self.run_a_orig_score and self.run_a_rep_score:
-                return {'baseline': ttest(self.run_b_orig_score, self.run_b_rep_score, rpd=rpd),
-                        'advanced': ttest(self.run_a_orig_score, self.run_a_rep_score, rpd=rpd)}
+                if print_feedback:
+                    print('Determining p-values of t-test for baseline and advanced run.')
+                return {'baseline': ttest(self.run_b_orig_score, self.run_b_rep_score, rpd=rpd, pbar=print_feedback),
+                        'advanced': ttest(self.run_a_orig_score, self.run_a_rep_score, rpd=rpd, pbar=print_feedback)}
             else:
-                return {'baseline': ttest(self.run_b_orig_score, self.run_b_rep_score, rpd=rpd)}
+                if print_feedback:
+                    print('Determining p-values of t-test for baseline run.')
+                return {'baseline': ttest(self.run_b_orig_score, self.run_b_rep_score, rpd=rpd, pbar=print_feedback)}
         else:
             print(ERR_MSG)
 
@@ -205,7 +221,7 @@ class RpdEvaluator(Evaluator):
         if self.run_a_rep:
             self.run_a_rep_score = self.rel_eval.evaluate(self.run_a_rep)
 
-    def ktau_union(self, run_b_score=None, run_a_score=None):
+    def ktau_union(self, run_b_score=None, run_a_score=None, print_feedback=False):
         """
         Determines Kendall's tau Union (KTU) between the original and reproduced document orderings
         according to the following paper:
@@ -217,24 +233,33 @@ class RpdEvaluator(Evaluator):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
+        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
         @return: Dictionary with KTU values that compare the document orderings of the original and reproduced runs.
         """
         if self.run_b_orig_score and run_b_score:
             if self.run_a_orig_score and run_a_score:
-                return {'baseline': ktu(self.run_b_orig, run_b_score),
-                        'advanced': ktu(self.run_a_orig, run_a_score)}
+                if print_feedback:
+                    print("Determining Kendall's tau Union (KTU) for baseline and advanced run.")
+                return {'baseline': ktu(self.run_b_orig, run_b_score, pbar=print_feedback),
+                        'advanced': ktu(self.run_a_orig, run_a_score, pbar=print_feedback)}
             else:
-                return {'baseline':  ktu(self.run_b_orig, run_b_score)}
+                if print_feedback:
+                    print("Determining Kendall's tau Union (KTU) for baseline run.")
+                return {'baseline':  ktu(self.run_b_orig, run_b_score, pbar=print_feedback)}
         if self.run_b_orig_score and self.run_b_rep_score:
             if self.run_a_orig_score and self.run_a_rep_score:
-                return {'baseline': ktu(self.run_b_orig, self.run_b_rep),
-                        'advanced': ktu(self.run_a_orig, self.run_a_rep)}
+                if print_feedback:
+                    print("Determining Kendall's tau Union (KTU) for baseline and advanced run.")
+                return {'baseline': ktu(self.run_b_orig, self.run_b_rep, pbar=print_feedback),
+                        'advanced': ktu(self.run_a_orig, self.run_a_rep, pbar=print_feedback)}
             else:
-                return {'baseline':  ktu(self.run_b_orig, self.run_b_rep)}
+                if print_feedback:
+                    print("Determining Kendall's tau Union (KTU) for baseline run.")
+                return {'baseline':  ktu(self.run_b_orig, self.run_b_rep, pbar=print_feedback)}
         else:
             print(ERR_MSG)
 
-    def rbo(self, run_b_score=None, run_a_score=None):
+    def rbo(self, run_b_score=None, run_a_score=None, print_feedback=False):
         """
         Determines the Rank-Biased Overlap (RBO) between the original and reproduced document orderings
         according to the following paper:
@@ -246,24 +271,33 @@ class RpdEvaluator(Evaluator):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
+        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
         @return: Dictionary with RBO values that compare the document orderings of the original and reproduced runs.
         """
         if self.run_b_orig_score and run_b_score:
             if self.run_a_orig_score and run_a_score:
-                return {'baseline': RBO(self.run_b_orig, run_b_score),
-                        'advanced': RBO(self.run_a_orig, run_a_score)}
+                if print_feedback:
+                    print("Determining Rank-biased Overlap (RBO) for baseline and advanced run.")
+                return {'baseline': RBO(self.run_b_orig, run_b_score, pbar=print_feedback),
+                        'advanced': RBO(self.run_a_orig, run_a_score, pbar=print_feedback)}
             else:
-                return {'baseline':  RBO(self.run_b_orig, run_b_score)}
+                if print_feedback:
+                    print("Determining Rank-biased Overlap (RBO) for baseline run.")
+                return {'baseline':  RBO(self.run_b_orig, run_b_score, pbar=print_feedback)}
         if self.run_b_orig_score and self.run_b_rep_score:
             if self.run_a_orig_score and self.run_a_rep_score:
-                return {'baseline': RBO(self.run_b_orig, self.run_b_rep),
-                        'advanced': RBO(self.run_a_orig, self.run_a_rep)}
+                if print_feedback:
+                    print("Determining Rank-biased Overlap (RBO) for baseline and advanced run.")
+                return {'baseline': RBO(self.run_b_orig, self.run_b_rep, pbar=print_feedback),
+                        'advanced': RBO(self.run_a_orig, self.run_a_rep, pbar=print_feedback)}
             else:
-                return {'baseline':  RBO(self.run_b_orig, self.run_b_rep)}
+                if print_feedback:
+                    print("Determining Rank-biased Overlap (RBO) for baseline run.")
+                return {'baseline':  RBO(self.run_b_orig, self.run_b_rep, pbar=print_feedback)}
         else:
             print(ERR_MSG)
 
-    def rmse(self, run_b_score=None, run_a_score=None):
+    def rmse(self, run_b_score=None, run_a_score=None, print_feedback=False):
         """
         Determines the Root Mean Square Error (RMSE) according to the following paper:
         Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
@@ -274,25 +308,34 @@ class RpdEvaluator(Evaluator):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
+        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
         @return: Dictionary with RMSE values that measure the closeness
                  between the topics scores of the original and reproduced runs.
         """
         if self.run_b_orig_score and run_b_score:
             if self.run_a_orig_score and run_a_score:
-                return {'baseline': RMSE(self.run_b_orig_score, run_b_score),
-                        'advanced': RMSE(self.run_a_orig_score, run_a_score)}
+                if print_feedback:
+                    print("Determining Root Mean Square Error (RMSE) for baseline and advanced run.")
+                return {'baseline': RMSE(self.run_b_orig_score, run_b_score, pbar=print_feedback),
+                        'advanced': RMSE(self.run_a_orig_score, run_a_score, pbar=print_feedback)}
             else:
-                return {'baseline': RMSE(self.run_b_orig_score, run_b_score)}
+                if print_feedback:
+                    print("Determining Root Mean Square Error (RMSE) for baseline run.")
+                return {'baseline': RMSE(self.run_b_orig_score, run_b_score, pbar=print_feedback)}
         if self.run_b_orig_score and self.run_b_rep_score:
             if self.run_a_orig_score and self.run_a_rep_score:
-                return {'baseline': RMSE(self.run_b_orig_score, self.run_b_rep_score),
-                        'advanced': RMSE(self.run_a_orig_score, self.run_a_rep_score)}
+                if print_feedback:
+                    print("Determining Root Mean Square Error (RMSE) for baseline and advanced run.")
+                return {'baseline': RMSE(self.run_b_orig_score, self.run_b_rep_score, pbar=print_feedback),
+                        'advanced': RMSE(self.run_a_orig_score, self.run_a_rep_score, pbar=print_feedback)}
             else:
-                return {'baseline': RMSE(self.run_b_orig_score, self.run_b_rep_score)}
+                if print_feedback:
+                    print("Determining Root Mean Square Error (RMSE) for baseline run.")
+                return {'baseline': RMSE(self.run_b_orig_score, self.run_b_rep_score, pbar=print_feedback)}
         else:
             print(ERR_MSG)
 
-    def ttest(self, run_b_score=None, run_a_score=None):
+    def ttest(self, run_b_score=None, run_a_score=None, print_feedback=False):
         """
         Conducts a paired two-tailed t-test for reproduced runs that were derived from the same test collection
         as in the original experiment.
@@ -301,9 +344,10 @@ class RpdEvaluator(Evaluator):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
+        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
         @return: Dictionary with p-values that compare the score distributions of the baseline and advanced run.
         """
-        return self._ttest(run_b_score=run_b_score, run_a_score=run_a_score)
+        return self._ttest(run_b_score=run_b_score, run_a_score=run_a_score, print_feedback=print_feedback)
 
 
 class RplEvaluator(Evaluator):
@@ -338,7 +382,7 @@ class RplEvaluator(Evaluator):
         if self.run_a_rep:
             self.run_a_rep_score = self.rel_eval_rpd.evaluate(self.run_a_rep)
 
-    def ttest(self, run_b_score=None, run_a_score=None):
+    def ttest(self, run_b_score=None, run_a_score=None, print_feedback=False):
         """
         Conducts an un-paired two-tailed t-test for replicated runs that were derived from a test collection
         not used in the original experiment.
@@ -347,6 +391,7 @@ class RplEvaluator(Evaluator):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
+        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
         @return: Dictionary with p-values that compare the score distributions of the baseline and advanced run.
         """
-        return self._ttest(rpd=False, run_b_score=run_b_score, run_a_score=run_a_score)
+        return self._ttest(rpd=False, run_b_score=run_b_score, run_a_score=run_a_score, print_feedback=print_feedback)

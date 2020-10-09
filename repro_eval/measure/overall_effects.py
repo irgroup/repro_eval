@@ -1,5 +1,6 @@
 import numpy as np
 from copy import deepcopy
+from tqdm import tqdm
 from repro_eval.config import exclude
 
 
@@ -61,7 +62,7 @@ def mean_improvement(run_a, run_b):
     return dict(_mean_improvement(run_a, run_b))
 
 
-def _er(orig_score_a, orig_score_b, rep_score_a, rep_score_b):
+def _er(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
     """
     Helping function returning a generator for determining the Effect Ratio (ER).
 
@@ -69,16 +70,19 @@ def _er(orig_score_a, orig_score_b, rep_score_a, rep_score_b):
     @param orig_score_b: Scores of the original baseline run.
     @param rep_score_a: Scores of the reproduced/replicated advanced run.
     @param rep_score_b: Scores of the reproduced/replicated baseline run.
+    @param pbar: Boolean value indicating if progress bar should be printed.
     @return: Generator with ER scores.
     """
     mi_orig = mean_improvement(orig_score_a, orig_score_b)
     mi_rep = mean_improvement(rep_score_a, rep_score_b)
 
-    for measure, value in mi_rep.items():
+    generator = tqdm(mi_rep.items()) if pbar else mi_rep.items()
+
+    for measure, value in generator:
         yield measure, value / mi_orig.get(measure)
 
 
-def ER(orig_score_a, orig_score_b, rep_score_a, rep_score_b):
+def ER(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
     """
     Determines the Effect Ratio (ER) according to the following paper:
     Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
@@ -92,9 +96,10 @@ def ER(orig_score_a, orig_score_b, rep_score_a, rep_score_b):
     @param orig_score_b: Scores of the original baseline run.
     @param rep_score_a: Scores of the reproduced/replicated advanced run.
     @param rep_score_b: Scores of the reproduced/replicated baseline run.
+    @param pbar: Boolean value indicating if progress bar should be printed.
     @return: Dictionary containing the ER values for the specified run combination.
     """
-    return dict(_er(orig_score_a, orig_score_b, rep_score_a, rep_score_b))
+    return dict(_er(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=pbar))
 
 
 def _mean_score(scores):
@@ -148,7 +153,7 @@ def rel_improve(scores_a, scores_b):
     return dict(_rel_improve(scores_a, scores_b))
 
 
-def _deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b):
+def _deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
     """
     Helping function returning a generator for determining the Delta Relative Improvement (DeltaRI).
 
@@ -156,16 +161,19 @@ def _deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b):
     @param orig_score_b: Scores of the original baseline run.
     @param rep_score_a: Scores of the reproduced/replicated advanced run.
     @param rep_score_b: Scores of the reproduced/replicated baseline run.
+    @param pbar: Boolean value indicating if progress bar should be printed.
     @return: Generator with DeltaRI scores.
     """
     rel_improve_orig = rel_improve(orig_score_a, orig_score_b)
     rel_improve_rep = rel_improve(rep_score_a, rep_score_b)
 
-    for measure, ri in rel_improve_orig.items():
+    generator = tqdm(rel_improve_orig.items()) if pbar else rel_improve_orig.items()
+
+    for measure, ri in generator:
         yield measure, ri - rel_improve_rep.get(measure)
 
 
-def deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b):
+def deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
     """
     Determines the Delta Relative Improvement (DeltaRI) according to the following paper:
     Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
@@ -179,6 +187,7 @@ def deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b):
     @param orig_score_b: Scores of the original baseline run.
     @param rep_score_a: Scores of the reproduced/replicated advanced run.
     @param rep_score_b: Scores of the reproduced/replicated baseline run.
+    @param pbar: Boolean value indicating if progress bar should be printed.
     @return: Dictionary containing the DeltaRI values for the specified run combination.
     """
-    return dict(_deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b))
+    return dict(_deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=pbar))

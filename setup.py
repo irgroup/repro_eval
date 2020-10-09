@@ -11,6 +11,7 @@ setup(name='repro_eval',
       install_requires=[
           'pytrec_eval',
           'numpy',
-          'scipy'
+          'scipy',
+          'tqdm'
       ],
       zip_safe=False)
