@@ -16,6 +16,10 @@
  }
  ```
 
+## Demonstration
+
+If you follow this [link](https://colab.research.google.com/github/irgroup/repro_eval/blob/master/example/demo.ipynb), you will be provided with an interactive Google Colab demonstration of `repro_eval`. The demo includes example data, but is also runnable with other results in TREC run file syntax.
+
 ### Naming convention
 
 - `rpd` reproduced
