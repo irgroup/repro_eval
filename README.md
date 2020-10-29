@@ -16,9 +16,11 @@
  }
  ```
 
-## Demonstration
+## Demonstration | :movie_camera: [Video](https://drive.google.com/file/d/1PZFd10o_-KiAzbls6tvUZ2-bwwlMkoSI/view)
 
-If you follow this [link](https://colab.research.google.com/github/irgroup/repro_eval/blob/master/example/demo.ipynb), you will be provided with an interactive Google Colab demonstration of `repro_eval`. The demo includes example data, but is also runnable with other results in TREC run file syntax.
+If you follow this [link](https://colab.research.google.com/github/irgroup/repro_eval/blob/master/example/demo.ipynb), you will be provided with an interactive Google Colab demonstration of `repro_eval`. The demo includes example data, but is also runnable with other results in TREC run file syntax. Alternatively, please have a look at the [video demonstration](https://drive.google.com/file/d/1PZFd10o_-KiAzbls6tvUZ2-bwwlMkoSI/view).
+
+
 
 ### Naming convention
 
