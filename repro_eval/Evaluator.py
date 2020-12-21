@@ -357,12 +357,12 @@ class RplEvaluator(Evaluator):
     """
     def __init__(self, **kwargs):
         super(RplEvaluator, self).__init__(**kwargs)
-        self.qrel_rpd_path = kwargs.get('qrel_rpd_path', None)
+        self.qrel_rpl_path = kwargs.get('qrel_rpl_path', None)
 
-        if self.qrel_rpd_path:
-            with open(self.qrel_rpd_path, 'r') as f_qrel:
-                qrel_rpd = pytrec_eval.parse_qrel(f_qrel)
-                self.rel_eval_rpd = pytrec_eval.RelevanceEvaluator(qrel_rpd, pytrec_eval.supported_measures)
+        if self.qrel_rpl_path:
+            with open(self.qrel_rpl_path, 'r') as f_qrel:
+                qrel_rpl = pytrec_eval.parse_qrel(f_qrel)
+                self.rel_eval_rpl = pytrec_eval.RelevanceEvaluator(qrel_rpl, pytrec_eval.supported_measures)
 
     def evaluate(self, run=None):
         """
@@ -374,13 +374,13 @@ class RplEvaluator(Evaluator):
         @return: If run is specified, a dictionary with the corresponding scores is returned.
         """
         if run:
-            return self.rel_eval_rpd.evaluate(run)
+            return self.rel_eval_rpl.evaluate(run)
 
         super(RplEvaluator, self).evaluate()
         if self.run_b_rep:
-            self.run_b_rep_score = self.rel_eval_rpd.evaluate(self.run_b_rep)
+            self.run_b_rep_score = self.rel_eval_rpl.evaluate(self.run_b_rep)
         if self.run_a_rep:
-            self.run_a_rep_score = self.rel_eval_rpd.evaluate(self.run_a_rep)
+            self.run_a_rep_score = self.rel_eval_rpl.evaluate(self.run_a_rep)
 
     def ttest(self, run_b_score=None, run_a_score=None, print_feedback=False):
         """
