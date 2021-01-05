@@ -28,21 +28,21 @@ def main():
 
     parser.add_argument('-t', '--type')
     parser.add_argument('-m', '--measure', nargs='+')
-    parser.add_argument('-q', '--qrel', nargs='+')
+    parser.add_argument('-q', '--qrels', nargs='+')
     parser.add_argument('-r', '--runs', nargs='+')
 
     args = parser.parse_args()
 
-    if args.type == 'rpd':
+    if args.type in ['rpd', 'reproducibility']:
         if len(args.runs) == 4:
-            rpd_eval = RpdEvaluator(qrel_orig_path=args.qrel[0],
+            rpd_eval = RpdEvaluator(qrel_orig_path=args.qrels[0],
                                     run_b_orig_path=args.runs[0],
                                     run_a_orig_path=args.runs[1],
                                     run_b_rep_path=args.runs[2],
                                     run_a_rep_path=args.runs[3])
 
         if len(args.runs) == 2:
-            rpd_eval = RpdEvaluator(qrel_orig_path=args.qrel[0],
+            rpd_eval = RpdEvaluator(qrel_orig_path=args.qrels[0],
                                     run_b_orig_path=args.runs[0],
                                     run_a_orig_path=None,
                                     run_b_rep_path=args.runs[1],
@@ -115,22 +115,22 @@ def main():
                 print_base_adv(measure, 'PVAL', value, value_adv)
             print()
 
-    if args.type == 'rpl':
+    if args.type in ['rpl', 'replicability']:
         if len(args.runs) == 4:
-            rpl_eval = RplEvaluator(qrel_orig_path=args.qrel[0],
+            rpl_eval = RplEvaluator(qrel_orig_path=args.qrels[0],
                                     run_b_orig_path=args.runs[0],
                                     run_a_orig_path=args.runs[1],
                                     run_b_rep_path=args.runs[2],
                                     run_a_rep_path=args.runs[3],
-                                    qrel_rpl_path=args.qrel[1])
+                                    qrel_rpl_path=args.qrels[1])
 
         if len(args.runs) == 2:
-            rpl_eval = RplEvaluator(qrel_orig_path=args.qrel[0],
+            rpl_eval = RplEvaluator(qrel_orig_path=args.qrels[0],
                                     run_b_orig_path=args.runs[0],
                                     run_a_orig_path=None,
                                     run_b_rep_path=args.runs[1],
                                     run_a_rep_path=None,
-                                    qrel_rpl_path=args.qrel[1])
+                                    qrel_rpl_path=args.qrels[1])
 
         rpl_eval.trim()
         rpl_eval.evaluate()
