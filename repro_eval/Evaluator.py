@@ -174,7 +174,7 @@ class Evaluator(object):
         @param print_feedback: Boolean value indicating if feeback on progress should be printed.
         @return: Dictionary with p-values that compare the score distributions of the baseline and advanced run.
         """
-        if self.run_b_orig_score and self.run_b_rep_score:
+        if self.run_b_orig_score and (self.run_b_rep_score or run_b_score):
             if run_b_score and run_a_score:
                 if print_feedback:
                     print('Determining p-values of t-test for baseline and advanced run.')
