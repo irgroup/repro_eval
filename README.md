@@ -1,6 +1,7 @@
 # repro_eval
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/irgroup/repro_eval/blob/master/example/demo.ipynb)
+[![Python package](https://github.com/irgroup/repro_eval/actions/workflows/push.yml/badge.svg?branch=master)](https://github.com/irgroup/repro_eval/actions/workflows/push.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 `repro_eval` is a collection of measures to evaluate the reproducibilty/replicability of system-oriented IR experiments. The measures were described and compared in this paper:
