@@ -1163,7 +1163,7 @@ We benefited from these codebases a lot and would like to express our gratitude 
 
 If you use `repro_eval` in your work, please cite it as follows:
 
-```
+ ```
  @inproceedings{10.1007/978-3-030-72240-1_51, 
      author = {Timo Breuer and Nicola Ferro and Maria Maistro and Philipp Schaer}, 
      title = {repro{\_}eval: {A} Python Interface to Reproducibility Measures of System-Oriented {IR} Experiments},
