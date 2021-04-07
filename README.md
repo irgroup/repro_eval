@@ -26,7 +26,12 @@
 If you follow this [link](https://colab.research.google.com/github/irgroup/repro_eval/blob/master/example/demo.ipynb), you will be provided with an interactive Google Colab demonstration of `repro_eval`. The demo includes example data, but is also runnable with other results in TREC run file syntax. Alternatively, please have a look at the [video demonstration](https://drive.google.com/file/d/1PZFd10o_-KiAzbls6tvUZ2-bwwlMkoSI/view).
 
 ### Setup
-**`repro_eval`** can be installed as a Python package:
+Install via [PyPI](https://pypi.org/project/repro-eval):
+```
+pip install repro-eval==0.1
+```
+
+Install via GitHub repository:
 ```
 pip install git+https://github.com/irgroup/repro_eval.git
 ```
