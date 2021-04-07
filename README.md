@@ -1159,34 +1159,19 @@ We use the implementation of the Rank-biased Overlap (RBO) by [dlukes](https://g
 We build up on the [pytrec_eval](https://github.com/cvangysel/pytrec_eval) interface for the underlying IR measures.
 We benefited from these codebases a lot and would like to express our gratitude for authors of these repositories.
 
-<!---
+### Citation
 
-### todos
-- [ ] code documentation
----
-- [x] implement kendall's tau
-- [x] implement rmse 
-- [x] implement arp
-- [x] implement rbo
-- [x] implement effect ratio
-- [x] implement delta relative improvement
-- [x] implement p-values of ttests
-- [x] implement absolute per-topic difference
-- [x] Evaluator class
-- [x] load runs in bulk
-- [x] plot: arp scores vs. run constellations (rpl) 
-- [x] plot: kendall's tau vs. cut-off (rpl) 
-- [x] plot: rmse vs. cut-off (rpl) 
-- [x] plot: er vs. run constellations 
-- [x] plot: er vs. deltaRI 
-- [x] cli
-- [x] pretty print
-- [x] interface extension for various runs
-- [x] plots (see subtasks below)
-- [x] adapt the naming to the [new ACM definitions](https://www.acm.org/publications/policies/artifact-review-badging)
+If you use `repro_eval` in your work, please cite it as follows:
 
-### open issues
-
-- [ ] p-vals do not comply with results in sigir-paper
-
--->
+```
+ @inproceedings{10.1007/978-3-030-72240-1_51, 
+     author = {Timo Breuer and Nicola Ferro and Maria Maistro and Philipp Schaer}, 
+     title = {repro{\_}eval: {A} Python Interface to Reproducibility Measures of System-Oriented {IR} Experiments},
+     year = {2021},     
+     publisher = {Springer},    
+     doi = {10.1007/978-3-030-72240-1\_51},
+     booktitle = {Advances in Information Retrieval - 43rd European Conference on {IR} Research, {ECIR} 2021, Virtual Event, March 28 - April 1, 2021, Proceedings, Part {II}},
+     pages = {481--486},
+     series = {Lecture Notes in Computer Science}
+ }
+```
