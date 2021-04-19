@@ -4,6 +4,7 @@
 [![Python package](https://github.com/irgroup/repro_eval/actions/workflows/push.yml/badge.svg?branch=master)](https://github.com/irgroup/repro_eval/actions/workflows/push.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![PyPI version](https://badge.fury.io/py/repro-eval.svg)](https://badge.fury.io/py/repro-eval)
+[![doi](http://img.shields.io/badge/doi-10.1007%2F978--3--030--72240--1__51-blue.svg?style=flat)](https://doi.org/10.1007/978-3-030-72240-1_51)
 
 `repro_eval` is a collection of measures to evaluate the reproducibilty/replicability of system-oriented IR experiments. The measures were described and compared in this paper:
 
@@ -28,7 +29,7 @@ If you follow this [link](https://colab.research.google.com/github/irgroup/repro
 ### Setup
 Install via [PyPI](https://pypi.org/project/repro-eval):
 ```
-pip install repro-eval==0.1
+pip install repro_eval==0.1
 ```
 
 Install via GitHub repository:
