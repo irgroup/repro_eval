@@ -246,9 +246,9 @@ class RpdEvaluator(Evaluator):
                     print("Determining Kendall's tau Union (KTU) for baseline and advanced run.")
                 with open(run_b_path, 'r') as b_run, open(run_b_path, 'r') as a_run:
                     run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: self.run_b_rep[t] for t in sorted(run_b_rep)}
+                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
                     run_a_rep = pytrec_eval.parse_run(a_run)
-                    run_a_rep = {t: self.run_a_rep[t] for t in sorted(run_a_rep)}
+                    run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
                 return {'baseline': ktu(self.run_b_orig, run_b_rep, pbar=print_feedback),
                         'advanced': ktu(self.run_a_orig, run_a_rep, pbar=print_feedback)}
             else:
@@ -256,7 +256,7 @@ class RpdEvaluator(Evaluator):
                     print("Determining Kendall's tau Union (KTU) for baseline run.")
                 with open(run_b_path, 'r') as b_run:
                     run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: self.run_b_rep[t] for t in sorted(run_b_rep)}
+                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
                 return {'baseline': ktu(self.run_b_orig, run_b_rep, pbar=print_feedback)}
 
         if self.run_b_orig_score and run_b_score:
