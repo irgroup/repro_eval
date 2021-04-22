@@ -26,4 +26,16 @@ def test_ktu_path_param():
     assert ktu.get('baseline') == base_ktu.get('baseline')
 
 
+def test_rbo_path_param():
+    rbo = rpd_eval.rbo()
+    assert 'baseline' in rbo.keys()
+    assert 'advanced' in rbo.keys()
 
+    base_rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+                                 run_b_orig_path='./example/orig_b.txt')
+    base_rpd_eval.trim()
+    base_rpd_eval.evaluate()
+
+    base_rbo = base_rpd_eval.rbo(run_b_path='./example/rpd_b.txt')
+    assert 'baseline' in base_rbo.keys()
+    assert rbo.get('baseline') == base_rbo.get('baseline')
