@@ -244,7 +244,7 @@ class RpdEvaluator(Evaluator):
             if self.run_a_orig_score and run_a_path:
                 if print_feedback:
                     print("Determining Kendall's tau Union (KTU) for baseline and advanced run.")
-                with open(run_b_path, 'r') as b_run, open(run_b_path, 'r') as a_run:
+                with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
                     run_b_rep = pytrec_eval.parse_run(b_run)
                     run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
                     run_a_rep = pytrec_eval.parse_run(a_run)
@@ -305,7 +305,7 @@ class RpdEvaluator(Evaluator):
             if self.run_a_orig_score and run_a_path:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline and advanced run.")
-                with open(run_b_path, 'r') as b_run, open(run_b_path, 'r') as a_run:
+                with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
                     run_b_rep = pytrec_eval.parse_run(b_run)
                     run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
                     run_a_rep = pytrec_eval.parse_run(a_run)
