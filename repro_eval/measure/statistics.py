@@ -1,3 +1,4 @@
+import math
 from scipy.stats.stats import ttest_rel, ttest_ind
 from tqdm import tqdm
 from repro_eval.util import topic_scores
@@ -40,4 +41,10 @@ def ttest(orig_score, rep_score, rpd=True, pbar=False):
     @param pbar: Boolean value indicating if progress bar should be printed.
     @return: Dictionary with p-values that compare the score distributions of the baseline and advanced run.
     """
-    return dict(_ttest(orig_score, rep_score, rpd=rpd, pbar=pbar))
+    pvals = dict(_ttest(orig_score, rep_score, rpd=rpd, pbar=pbar))
+    nan_list = list(filter(lambda x: math.isnan(x), pvals.values()))
+    if len(nan_list) == len(pvals):  # is every pval is nan?
+        if orig_score == rep_score:  # equal score distributions?
+            pvals = dict.fromkeys(pvals, 1.0)
+
+    return pvals
