@@ -221,7 +221,7 @@ class RpdEvaluator(Evaluator):
         if self.run_a_rep:
             self.run_a_rep_score = self.rel_eval.evaluate(self.run_a_rep)
 
-    def ktau_union(self, run_b_score=None, run_a_score=None, run_b_path=None, run_a_path=None, print_feedback=False):
+    def ktau_union(self, run_b_rep=None, run_a_rep=None, run_b_path=None, run_a_path=None, print_feedback=False):
         """
         Determines Kendall's tau Union (KTU) between the original and reproduced document orderings
         according to the following paper:
@@ -229,10 +229,10 @@ class RpdEvaluator(Evaluator):
         How to Measure the Reproducibility of System-oriented IR Experiments.
         Proceedings of SIGIR, pages 349-358, 2020.
 
-        @param run_b_score: Scores of the baseline run,
-                            if not provided the scores of the RpdEvaluator object will be used instead.
-        @param run_a_score: Scores of the advanced run,
-                            if not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_b_rep: Scores of the baseline run,
+                          if not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_a_rep: Scores of the advanced run,
+                          if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_b_path: Path to another reproduced baseline run,
                            if not provided the reproduced baseline run of the RpdEvaluator object will be used instead.
         @param run_a_path: Path to another reproduced advanced run,
@@ -240,8 +240,8 @@ class RpdEvaluator(Evaluator):
         @param print_feedback: Boolean value indicating if feedback on progress should be printed.
         @return: Dictionary with KTU values that compare the document orderings of the original and reproduced runs.
         """
-        if self.run_b_orig_score and run_b_path:
-            if self.run_a_orig_score and run_a_path:
+        if self.run_b_orig and run_b_path:
+            if self.run_a_orig and run_a_path:
                 if print_feedback:
                     print("Determining Kendall's tau Union (KTU) for baseline and advanced run.")
                 with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
@@ -259,18 +259,19 @@ class RpdEvaluator(Evaluator):
                     run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
                 return {'baseline': ktu(self.run_b_orig, run_b_rep, pbar=print_feedback)}
 
-        if self.run_b_orig_score and run_b_score:
-            if self.run_a_orig_score and run_a_score:
+        if self.run_b_orig and run_b_rep:
+            if self.run_a_orig and run_a_rep:
                 if print_feedback:
                     print("Determining Kendall's tau Union (KTU) for baseline and advanced run.")
-                return {'baseline': ktu(self.run_b_orig, run_b_score, pbar=print_feedback),
-                        'advanced': ktu(self.run_a_orig, run_a_score, pbar=print_feedback)}
+                return {'baseline': ktu(self.run_b_orig, run_b_rep, pbar=print_feedback),
+                        'advanced': ktu(self.run_a_orig, run_a_rep, pbar=print_feedback)}
             else:
                 if print_feedback:
                     print("Determining Kendall's tau Union (KTU) for baseline run.")
-                return {'baseline':  ktu(self.run_b_orig, run_b_score, pbar=print_feedback)}
-        if self.run_b_orig_score and self.run_b_rep_score:
-            if self.run_a_orig_score and self.run_a_rep_score:
+                return {'baseline':  ktu(self.run_b_orig, run_b_rep, pbar=print_feedback)}
+
+        if self.run_b_orig and self.run_b_rep:
+            if self.run_a_orig and self.run_a_rep:
                 if print_feedback:
                     print("Determining Kendall's tau Union (KTU) for baseline and advanced run.")
                 return {'baseline': ktu(self.run_b_orig, self.run_b_rep, pbar=print_feedback),
@@ -282,7 +283,7 @@ class RpdEvaluator(Evaluator):
         else:
             print(ERR_MSG)
 
-    def rbo(self, run_b_score=None, run_a_score=None, run_b_path=None, run_a_path=None, print_feedback=False):
+    def rbo(self, run_b_rep=None, run_a_rep=None, run_b_path=None, run_a_path=None, print_feedback=False):
         """
         Determines the Rank-Biased Overlap (RBO) between the original and reproduced document orderings
         according to the following paper:
@@ -290,10 +291,10 @@ class RpdEvaluator(Evaluator):
         How to Measure the Reproducibility of System-oriented IR Experiments.
         Proceedings of SIGIR, pages 349-358, 2020.
 
-        @param run_b_score: Scores of the baseline run,
-                            if not provided the scores of the RpdEvaluator object will be used instead.
-        @param run_a_score: Scores of the advanced run,
-                            if not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_b_rep: Scores of the baseline run,
+                          if not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_a_rep: Scores of the advanced run,
+                          if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_b_path: Path to another reproduced baseline run,
                            if not provided the reproduced baseline run of the RpdEvaluator object will be used instead.
         @param run_a_path: Path to another reproduced advanced run,
@@ -301,8 +302,8 @@ class RpdEvaluator(Evaluator):
         @param print_feedback: Boolean value indicating if feedback on progress should be printed.
         @return: Dictionary with RBO values that compare the document orderings of the original and reproduced runs.
         """
-        if self.run_b_orig_score and run_b_path:
-            if self.run_a_orig_score and run_a_path:
+        if self.run_b_orig and run_b_path:
+            if self.run_a_orig and run_a_path:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline and advanced run.")
                 with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
@@ -320,18 +321,18 @@ class RpdEvaluator(Evaluator):
                     run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
                 return {'baseline': RBO(self.run_b_orig, run_b_rep, pbar=print_feedback)}
 
-        if self.run_b_orig_score and run_b_score:
-            if self.run_a_orig_score and run_a_score:
+        if self.run_b_orig and run_b_rep:
+            if self.run_a_orig and run_a_rep:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline and advanced run.")
-                return {'baseline': RBO(self.run_b_orig, run_b_score, pbar=print_feedback),
-                        'advanced': RBO(self.run_a_orig, run_a_score, pbar=print_feedback)}
+                return {'baseline': RBO(self.run_b_orig, run_b_rep, pbar=print_feedback),
+                        'advanced': RBO(self.run_a_orig, run_a_rep, pbar=print_feedback)}
             else:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline run.")
                 return {'baseline':  RBO(self.run_b_orig, run_b_score, pbar=print_feedback)}
-        if self.run_b_orig_score and self.run_b_rep_score:
-            if self.run_a_orig_score and self.run_a_rep_score:
+        if self.run_b_orig and self.run_b_rep:
+            if self.run_a_orig and self.run_a_rep:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline and advanced run.")
                 return {'baseline': RBO(self.run_b_orig, self.run_b_rep, pbar=print_feedback),
