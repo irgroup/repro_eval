@@ -408,7 +408,7 @@ class RpdEvaluator(Evaluator):
         else:
             print(ERR_MSG)
 
-    def ttest(self, run_b_score=None, run_a_score=None, print_feedback=False):
+    def ttest(self, run_b_score=None, run_a_score=None, run_b_path=None, run_a_path=None, print_feedback=False):
         """
         Conducts a paired two-tailed t-test for reproduced runs that were derived from the same test collection
         as in the original experiment.
@@ -417,9 +417,30 @@ class RpdEvaluator(Evaluator):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_b_path: Path to another reproduced baseline run,
+                           if not provided the reproduced baseline run of the RpdEvaluator object will be used instead.
+        @param run_a_path: Path to another reproduced advanced run,
+                           if not provided the reproduced advanced run of the RpdEvaluator object will be used instead.
         @param print_feedback: Boolean value indicating if feeback on progress should be printed.
         @return: Dictionary with p-values that compare the score distributions of the baseline and advanced run.
         """
+        if run_b_path:
+            if run_a_path:
+                with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
+                    run_b_rep = pytrec_eval.parse_run(b_run)
+                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
+                    run_b_rep_score = self.rel_eval.evaluate(run_b_rep)
+                    run_a_rep = pytrec_eval.parse_run(a_run)
+                    run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
+                    run_a_rep_score = self.rel_eval.evaluate(run_a_rep)
+                return self._ttest(run_b_score=run_b_rep_score, run_a_score=run_a_rep_score, print_feedback=print_feedback)
+            else:
+                with open(run_b_path, 'r') as b_run:
+                    run_b_rep = pytrec_eval.parse_run(b_run)
+                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
+                    run_b_rep_score = self.rel_eval.evaluate(run_b_rep)
+                return self._ttest(run_b_score=run_b_rep_score, run_a_score=None, print_feedback=print_feedback)
+
         return self._ttest(run_b_score=run_b_score, run_a_score=run_a_score, print_feedback=print_feedback)
 
 
