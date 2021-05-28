@@ -49,3 +49,23 @@ def test_rbo_path_param():
     _rbo = _rpd_eval.rbo(run_b_path='./example/rpd_b.txt', run_a_path='./example/rpd_a.txt')
     assert 'advanced' in _rbo.keys()
     assert rbo.get('advanced') == _rbo.get('advanced')
+
+
+def test_rmse_path_param():
+    rmse = rpd_eval.rmse()
+    assert 'baseline' in rmse.keys()
+    assert 'advanced' in rmse.keys()
+
+    _rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+                             run_b_orig_path='./example/orig_b.txt',
+                             run_a_orig_path='./example/orig_a.txt')
+    _rpd_eval.trim()
+    _rpd_eval.evaluate()
+
+    _rmse = _rpd_eval.rmse(run_b_path='./example/rpd_b.txt')
+    assert 'baseline' in _rmse.keys()
+    assert rmse.get('baseline') == _rmse.get('baseline')
+
+    _rmse = _rpd_eval.rmse(run_b_path='./example/rpd_b.txt', run_a_path='./example/rpd_a.txt')
+    assert 'advanced' in _rmse.keys()
+    assert rmse.get('advanced') == _rmse.get('advanced')
