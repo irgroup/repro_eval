@@ -133,3 +133,93 @@ def test_rpl_ttest_path_param():
     assert pval.get('advanced').get('ndcg') == _pval.get('advanced').get('ndcg')
     assert pval.get('advanced').get('P_10') == _pval.get('advanced').get('P_10')
     assert pval.get('advanced').get('map') == _pval.get('advanced').get('map')
+
+
+def test_rpd_er_path_param():
+    er = rpd_eval.er()
+
+    _rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+                             run_b_orig_path='./example/orig_b.txt',
+                             run_a_orig_path='./example/orig_a.txt')
+    _rpd_eval.trim()
+    _rpd_eval.evaluate()
+
+    _er = _rpd_eval.er(run_b_path='./example/rpd_b.txt', run_a_path='./example/rpd_a.txt')
+
+    # pick a few samples here since nan comparisons cause problems in combination with assert
+    assert er.get('ndcg') == _er.get('ndcg')
+    assert er.get('P_10') == _er.get('P_10')
+    assert er.get('map') == _er.get('map')
+
+
+def test_rpl_er_path_param():
+    rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+                            run_b_orig_path='./example/orig_b.txt',
+                            run_a_orig_path='./example/orig_a.txt',
+                            run_b_rep_path='./example/rpl_b.txt',
+                            run_a_rep_path='./example/rpl_a.txt',
+                            qrel_rpl_path='./example/data/qrels/core18.txt')
+
+    rpl_eval.trim()
+    rpl_eval.evaluate()
+
+    er = rpl_eval.er()
+
+    _rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+                             run_b_orig_path='./example/orig_b.txt',
+                             run_a_orig_path='./example/orig_a.txt',
+                             qrel_rpl_path='./example/data/qrels/core18.txt')
+    _rpl_eval.trim()
+    _rpl_eval.evaluate()
+
+    _er = _rpl_eval.er(run_b_path='./example/rpl_b.txt', run_a_path='./example/rpl_a.txt')
+
+    # pick a few samples here since nan comparisons cause problems in combination with assert
+    assert er.get('ndcg') == _er.get('ndcg')
+    assert er.get('P_10') == _er.get('P_10')
+    assert er.get('map') == _er.get('map')
+
+
+def test_rpd_dri_path_param():
+    dri = rpd_eval.dri()
+
+    _rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+                             run_b_orig_path='./example/orig_b.txt',
+                             run_a_orig_path='./example/orig_a.txt')
+    _rpd_eval.trim()
+    _rpd_eval.evaluate()
+
+    _dri = _rpd_eval.dri(run_b_path='./example/rpd_b.txt', run_a_path='./example/rpd_a.txt')
+
+    # pick a few samples here since nan comparisons cause problems in combination with assert
+    assert dri.get('ndcg') == _dri.get('ndcg')
+    assert dri.get('P_10') == _dri.get('P_10')
+    assert dri.get('map') == _dri.get('map')
+
+
+def test_rpl_dri_path_param():
+    rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+                            run_b_orig_path='./example/orig_b.txt',
+                            run_a_orig_path='./example/orig_a.txt',
+                            run_b_rep_path='./example/rpl_b.txt',
+                            run_a_rep_path='./example/rpl_a.txt',
+                            qrel_rpl_path='./example/data/qrels/core18.txt')
+
+    rpl_eval.trim()
+    rpl_eval.evaluate()
+
+    dri = rpl_eval.dri()
+
+    _rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+                             run_b_orig_path='./example/orig_b.txt',
+                             run_a_orig_path='./example/orig_a.txt',
+                             qrel_rpl_path='./example/data/qrels/core18.txt')
+    _rpl_eval.trim()
+    _rpl_eval.evaluate()
+
+    _dri = _rpl_eval.dri(run_b_path='./example/rpl_b.txt', run_a_path='./example/rpl_a.txt')
+
+    # pick a few samples here since nan comparisons cause problems in combination with assert
+    assert dri.get('ndcg') == _dri.get('ndcg')
+    assert dri.get('P_10') == _dri.get('P_10')
+    assert dri.get('map') == _dri.get('map')
