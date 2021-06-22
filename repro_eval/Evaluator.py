@@ -102,7 +102,7 @@ class Evaluator(object):
         if self.run_a_orig:
             self.run_a_orig_score = self.rel_eval.evaluate(self.run_a_orig)
 
-    def er(self, run_b_score=None, run_a_score=None, print_feedback=False):
+    def er(self, run_b_score=None, run_a_score=None, run_b_path=None, run_a_path=None, print_feedback=False):
         """
         Determines the Effect Ratio (ER) according to the following paper:
         Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
@@ -122,16 +122,28 @@ class Evaluator(object):
         if print_feedback:
             print('Determining Effect Ratio (ER)')
 
+        if self.run_b_orig_score and self.run_a_orig_score and run_b_path and run_a_path:
+            with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
+                run_b_rep = pytrec_eval.parse_run(b_run)
+                run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
+                run_b_rep_score = self.rel_eval_rpl.evaluate(run_b_rep) if hasattr(self, 'rel_eval_rpl') else self.rel_eval.evaluate(run_b_rep)
+                run_a_rep = pytrec_eval.parse_run(a_run)
+                run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
+                run_a_rep_score = self.rel_eval_rpl.evaluate(run_a_rep) if hasattr(self, 'rel_eval_rpl') else self.rel_eval.evaluate(run_a_rep)
+            return ER(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
+                      rep_score_b=run_b_rep_score, rep_score_a=run_a_rep_score, pbar=print_feedback)
+
         if self.run_b_orig_score and self.run_a_orig_score and run_b_score and run_a_score:
             return ER(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
                       rep_score_b=run_b_score, rep_score_a=run_a_score, pbar=print_feedback)
+
         if self.run_b_orig_score and self.run_a_orig_score and self.run_b_rep_score and self.run_a_rep_score:
             return ER(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
                       rep_score_b=self.run_b_rep_score, rep_score_a=self.run_a_rep_score, pbar=print_feedback)
         else:
             print(ERR_MSG)
 
-    def dri(self, run_b_score=None, run_a_score=None, print_feedback=False):
+    def dri(self, run_b_score=None, run_a_score=None, run_b_path=None, run_a_path=None, print_feedback=False):
         """
         Determines the Delta Relative Improvement (DeltaRI) according to the following paper:
         Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
@@ -150,9 +162,22 @@ class Evaluator(object):
         """
         if print_feedback:
             print('Determining Delta Relative Improvement (DRI)')
+
+        if self.run_b_orig_score and self.run_a_orig_score and run_b_path and run_a_path:
+            with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
+                run_b_rep = pytrec_eval.parse_run(b_run)
+                run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
+                run_b_rep_score = self.rel_eval_rpl.evaluate(run_b_rep) if hasattr(self, 'rel_eval_rpl') else self.rel_eval.evaluate(run_b_rep)
+                run_a_rep = pytrec_eval.parse_run(a_run)
+                run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
+                run_a_rep_score = self.rel_eval_rpl.evaluate(run_a_rep) if hasattr(self, 'rel_eval_rpl') else self.rel_eval.evaluate(run_a_rep)
+            return deltaRI(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
+                           rep_score_b=run_b_rep_score, rep_score_a=run_a_rep_score, pbar=print_feedback)
+
         if self.run_b_orig_score and self.run_a_orig_score and run_b_score and run_a_score:
             return deltaRI(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
                            rep_score_b=run_b_score, rep_score_a=run_a_score, pbar=print_feedback)
+
         if self.run_b_orig_score and self.run_a_orig_score and self.run_b_rep_score and self.run_a_rep_score:
             return deltaRI(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
                            rep_score_b=self.run_b_rep_score, rep_score_a=self.run_a_rep_score, pbar=print_feedback)
