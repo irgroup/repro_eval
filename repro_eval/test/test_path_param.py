@@ -1,5 +1,5 @@
 import pytest
-from repro_eval.Evaluator import RpdEvaluator
+from repro_eval.Evaluator import RpdEvaluator, RplEvaluator
 import numpy as np
 
 rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
@@ -91,6 +91,43 @@ def test_rpd_ttest_path_param():
     assert pval.get('baseline').get('map') == _pval.get('baseline').get('map')
 
     _pval = _rpd_eval.ttest(run_b_path='./example/rpd_b.txt', run_a_path='./example/rpd_a.txt')
+    assert 'advanced' in _pval.keys()
+    # pick a few samples here since nan comparisons cause problems in combination with assert
+    assert pval.get('advanced').get('ndcg') == _pval.get('advanced').get('ndcg')
+    assert pval.get('advanced').get('P_10') == _pval.get('advanced').get('P_10')
+    assert pval.get('advanced').get('map') == _pval.get('advanced').get('map')
+
+
+def test_rpl_ttest_path_param():
+    rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+                            run_b_orig_path='./example/orig_b.txt',
+                            run_a_orig_path='./example/orig_a.txt',
+                            run_b_rep_path='./example/rpl_b.txt',
+                            run_a_rep_path='./example/rpl_a.txt',
+                            qrel_rpl_path='./example/data/qrels/core18.txt')
+
+    rpl_eval.trim()
+    rpl_eval.evaluate()
+
+    pval = rpl_eval.ttest()
+    assert 'baseline' in pval.keys()
+    assert 'advanced' in pval.keys()
+
+    _rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+                             run_b_orig_path='./example/orig_b.txt',
+                             run_a_orig_path='./example/orig_a.txt',
+                             qrel_rpl_path='./example/data/qrels/core18.txt')
+    _rpl_eval.trim()
+    _rpl_eval.evaluate()
+
+    _pval = _rpl_eval.ttest(run_b_path='./example/rpl_b.txt')
+    assert 'baseline' in _pval.keys()
+    # pick a few samples here since nan comparisons cause problems in combination with assert
+    assert pval.get('baseline').get('ndcg') == _pval.get('baseline').get('ndcg')
+    assert pval.get('baseline').get('P_10') == _pval.get('baseline').get('P_10')
+    assert pval.get('baseline').get('map') == _pval.get('baseline').get('map')
+
+    _pval = _rpl_eval.ttest(run_b_path='./example/rpl_b.txt', run_a_path='./example/rpl_a.txt')
     assert 'advanced' in _pval.keys()
     # pick a few samples here since nan comparisons cause problems in combination with assert
     assert pval.get('advanced').get('ndcg') == _pval.get('advanced').get('ndcg')
