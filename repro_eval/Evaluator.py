@@ -116,7 +116,7 @@ class Evaluator(object):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
-        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
+        @param print_feedback: Boolean value indicating if feedback on progress should be printed.
         @return: Dictionary containing the ER values for the specified run combination.
         """
         if print_feedback:
@@ -157,7 +157,7 @@ class Evaluator(object):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
-        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
+        @param print_feedback: Boolean value indicating if feedback on progress should be printed.
         @return: Dictionary containing the DRI values for the specified run combination.
         """
         if print_feedback:
@@ -196,7 +196,7 @@ class Evaluator(object):
                             if not provided the scores of the RpdEvaluator object will be used instead.
         @param run_a_score: Scores of the advanced run,
                             if not provided the scores of the RpdEvaluator object will be used instead.
-        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
+        @param print_feedback: Boolean value indicating if feedback on progress should be printed.
         @return: Dictionary with p-values that compare the score distributions of the baseline and advanced run.
         """
         if self.run_b_orig_score and (self.run_b_rep_score or run_b_score):
@@ -384,7 +384,7 @@ class RpdEvaluator(Evaluator):
                            if not provided the reproduced baseline run of the RpdEvaluator object will be used instead.
         @param run_a_path: Path to another reproduced advanced run,
                            if not provided the reproduced advanced run of the RpdEvaluator object will be used instead.
-        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
+        @param print_feedback: Boolean value indicating if feedback on progress should be printed.
         @return: Dictionary with RMSE values that measure the closeness
                  between the topics scores of the original and reproduced runs.
         """
@@ -446,7 +446,7 @@ class RpdEvaluator(Evaluator):
                            if not provided the reproduced baseline run of the RpdEvaluator object will be used instead.
         @param run_a_path: Path to another reproduced advanced run,
                            if not provided the reproduced advanced run of the RpdEvaluator object will be used instead.
-        @param print_feedback: Boolean value indicating if feeback on progress should be printed.
+        @param print_feedback: Boolean value indicating if feedback on progress should be printed.
         @return: Dictionary with p-values that compare the score distributions of the baseline and advanced run.
         """
         if run_b_path:
