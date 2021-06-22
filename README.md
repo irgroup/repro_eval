@@ -6,7 +6,7 @@
 [![PyPI version](https://badge.fury.io/py/repro-eval.svg)](https://badge.fury.io/py/repro-eval)
 [![doi](http://img.shields.io/badge/doi-10.1007%2F978--3--030--72240--1__51-blue.svg?style=flat)](https://doi.org/10.1007/978-3-030-72240-1_51)
 
-`repro_eval` is a collection of measures to evaluate the reproducibilty/replicability of system-oriented IR experiments. The measures were described and compared in this paper:
+`repro_eval` is a collection of measures to evaluate the reproducibility/replicability of system-oriented IR experiments. The measures were described and compared in this paper:
 
   ```
  @inproceedings{10.1145/3397271.3401036, 
