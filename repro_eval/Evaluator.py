@@ -355,7 +355,7 @@ class RpdEvaluator(Evaluator):
             else:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline run.")
-                return {'baseline':  RBO(self.run_b_orig, run_b_score, pbar=print_feedback)}
+                return {'baseline':  RBO(self.run_b_orig, run_b_rep, pbar=print_feedback)}
         if self.run_b_orig and self.run_b_rep:
             if self.run_a_orig and self.run_a_rep:
                 if print_feedback:
