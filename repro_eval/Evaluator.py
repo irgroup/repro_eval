@@ -3,7 +3,7 @@ from repro_eval.util import trim
 from repro_eval.measure.statistics import ttest
 from repro_eval.measure.overall_effects import ER, deltaRI
 from repro_eval.measure.document_order import ktau_union as ktu, RBO
-from repro_eval.measure.effectiveness import rmse as RMSE
+from repro_eval.measure.effectiveness import rmse as RMSE, nrmse as nRMSE
 from repro_eval.config import ERR_MSG
 
 
@@ -430,6 +430,67 @@ class RpdEvaluator(Evaluator):
                 if print_feedback:
                     print("Determining Root Mean Square Error (RMSE) for baseline run.")
                 return {'baseline': RMSE(self.run_b_orig_score, self.run_b_rep_score, pbar=print_feedback)}
+        else:
+            print(ERR_MSG)
+
+    def nrmse(self, run_b_score=None, run_a_score=None, run_b_path=None, run_a_path=None, print_feedback=False):
+        """
+        Determines the normalized Root Mean Square Error (RMSE).
+
+        @param run_b_score: Scores of the baseline run,
+                            if not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_a_score: Scores of the advanced run,
+                            if not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_b_path: Path to another reproduced baseline run,
+                           if not provided the reproduced baseline run of the RpdEvaluator object will be used instead.
+        @param run_a_path: Path to another reproduced advanced run,
+                           if not provided the reproduced advanced run of the RpdEvaluator object will be used instead.
+        @param print_feedback: Boolean value indicating if feedback on progress should be printed.
+        @return: Dictionary with nRMSE values that measure the closeness
+                 between the topics scores of the original and reproduced runs.
+        """
+        if self.run_b_orig and run_b_path:
+            if self.run_a_orig and run_a_path:
+                if print_feedback:
+                    print("Determining normalized Root Mean Square Error (RMSE) for baseline and advanced run.")
+                with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
+                    run_b_rep = pytrec_eval.parse_run(b_run)
+                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
+                    run_b_rep_score = self.rel_eval.evaluate(run_b_rep)
+                    run_a_rep = pytrec_eval.parse_run(a_run)
+                    run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
+                    run_a_rep_score = self.rel_eval.evaluate(run_a_rep)
+                return {'baseline': nRMSE(self.run_b_orig_score, run_b_rep_score, pbar=print_feedback),
+                        'advanced': nRMSE(self.run_a_orig_score, run_a_rep_score, pbar=print_feedback)}
+            else:
+                if print_feedback:
+                    print("Determining normalized Root Mean Square Error (RMSE) for baseline run.")
+                with open(run_b_path, 'r') as b_run:
+                    run_b_rep = pytrec_eval.parse_run(b_run)
+                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
+                    run_b_rep_score = self.rel_eval.evaluate(run_b_rep)
+                return {'baseline': nRMSE(self.run_b_orig_score, run_b_rep_score, pbar=print_feedback)}
+
+        if self.run_b_orig_score and run_b_score:
+            if self.run_a_orig_score and run_a_score:
+                if print_feedback:
+                    print("Determining normalized Root Mean Square Error (RMSE) for baseline and advanced run.")
+                return {'baseline': nRMSE(self.run_b_orig_score, run_b_score, pbar=print_feedback),
+                        'advanced': nRMSE(self.run_a_orig_score, run_a_score, pbar=print_feedback)}
+            else:
+                if print_feedback:
+                    print("Determining normalized Root Mean Square Error (RMSE) for baseline run.")
+                return {'baseline': nRMSE(self.run_b_orig_score, run_b_score, pbar=print_feedback)}
+        if self.run_b_orig_score and self.run_b_rep_score:
+            if self.run_a_orig_score and self.run_a_rep_score:
+                if print_feedback:
+                    print("Determining Root Mean Square Error (RMSE) for baseline and advanced run.")
+                return {'baseline': nRMSE(self.run_b_orig_score, self.run_b_rep_score, pbar=print_feedback),
+                        'advanced': nRMSE(self.run_a_orig_score, self.run_a_rep_score, pbar=print_feedback)}
+            else:
+                if print_feedback:
+                    print("Determining normalized Root Mean Square Error (RMSE) for baseline run.")
+                return {'baseline': nRMSE(self.run_b_orig_score, self.run_b_rep_score, pbar=print_feedback)}
         else:
             print(ERR_MSG)
 
