@@ -29,6 +29,12 @@ def test_rmse():
     assert 'advanced' in rmse.keys()
 
 
+def test_nrmse():
+    nrmse = rpd_eval.nrmse()
+    assert 'baseline' in nrmse.keys()
+    assert 'advanced' in nrmse.keys()
+
+
 def test_er():
     er = rpd_eval.er()
     assert 'map' in er.keys()
