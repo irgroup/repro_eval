@@ -5,7 +5,7 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 setup(name='repro_eval',
-      version='0.2.1',
+      version='0.3',
       description='A tool to quantify the replicability and reproducibility of system-oriented IR experiments.',
       long_description=README,
       long_description_content_type="text/markdown",
