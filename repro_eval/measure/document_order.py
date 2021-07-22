@@ -6,6 +6,25 @@ from tqdm import tqdm
 from repro_eval.measure.external.rbo import rbo
 
 
+def _rbo(run, ideal, p, depth):
+    # Implementation taken from the TREC Health Misinformation Track with modifications
+    # see also: https://github.com/claclark/Compatibility
+    run_set = set()
+    ideal_set = set()
+
+    score = 0.0
+    normalizer = 0.0
+    weight = 1.0
+    for i in range(depth):
+        if i < len(run):
+            run_set.add(run[i])
+        if i < len(ideal):
+            ideal_set.add(ideal[i])
+        score += weight*len(ideal_set.intersection(run_set))/(i + 1)
+        normalizer += weight
+        weight *= p
+    return score/normalizer
+
 def _ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False):
     """
     Helping function returning a generator to determine Kendall's tau Union (KTU) for all topics.
@@ -45,7 +64,7 @@ def ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False):
     return dict(_ktau_union(orig_run, rep_run, trim_thresh=trim_thresh, pbar=pbar))
 
 
-def _RBO(orig_run, rep_run, phi, trim_thresh=TRIM_THRESH, pbar=False):
+def _RBO(orig_run, rep_run, phi, trim_thresh=TRIM_THRESH, pbar=False, misinfo=True):
     """
     Helping function returning a generator to determine the Rank-Biased Overlap (RBO) for all topics.
 
@@ -54,18 +73,28 @@ def _RBO(orig_run, rep_run, phi, trim_thresh=TRIM_THRESH, pbar=False):
     @param phi: Parameter for top-heaviness of the RBO.
     @param trim_thresh: Threshold values for the number of documents to be compared.
     @param pbar: Boolean value indicating if progress bar should be printed.
+    @param misinfo: Use the RBO implementation that is also used in the TREC Health Misinformation Track.
+                    See also: https://github.com/claclark/Compatibility
     @return: Generator with RBO values.
     """
 
     generator = tqdm(rep_run.items()) if pbar else rep_run.items()
 
-    for topic, docs in generator:
-        yield topic, rbo(list(rep_run.get(topic).keys())[:trim_thresh],
-                         list(orig_run.get(topic).keys())[:trim_thresh],
-                         p=phi).ext
+    if misinfo:
+        for topic, docs in generator:
+            yield topic, _rbo(list(rep_run.get(topic).keys())[:trim_thresh],
+                              list(orig_run.get(topic).keys())[:trim_thresh],
+                              p=phi,
+                              depth=trim_thresh)
+
+    else:
+        for topic, docs in generator:
+            yield topic, rbo(list(rep_run.get(topic).keys())[:trim_thresh],
+                             list(orig_run.get(topic).keys())[:trim_thresh],
+                             p=phi).ext
 
 
-def RBO(orig_run, rep_run, phi=PHI, trim_thresh=TRIM_THRESH, pbar=False):
+def RBO(orig_run, rep_run, phi=PHI, trim_thresh=TRIM_THRESH, pbar=False, misinfo=True):
     """
     Determines the Rank-Biased Overlap (RBO) between the original and reproduced document orderings
     according to the following paper:
@@ -78,6 +107,8 @@ def RBO(orig_run, rep_run, phi=PHI, trim_thresh=TRIM_THRESH, pbar=False):
     @param phi: Parameter for top-heaviness of the RBO.
     @param trim_thresh: Threshold values for the number of documents to be compared.
     @param pbar: Boolean value indicating if progress bar should be printed.
+    @param misinfo: Use the RBO implementation that is also used in the TREC Health Misinformation Track.
+                    See also: https://github.com/claclark/Compatibility
     @return: Dictionary with RBO values that compare the document orderings of the original and reproduced runs.
     """
-    return dict(_RBO(orig_run, rep_run, phi=phi, trim_thresh=trim_thresh, pbar=pbar))
+    return dict(_RBO(orig_run, rep_run, phi=phi, trim_thresh=trim_thresh, pbar=pbar, misinfo=misinfo))

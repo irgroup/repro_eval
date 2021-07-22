@@ -308,7 +308,7 @@ class RpdEvaluator(Evaluator):
         else:
             print(ERR_MSG)
 
-    def rbo(self, run_b_rep=None, run_a_rep=None, run_b_path=None, run_a_path=None, print_feedback=False):
+    def rbo(self, run_b_rep=None, run_a_rep=None, run_b_path=None, run_a_path=None, print_feedback=False, misinfo=True):
         """
         Determines the Rank-Biased Overlap (RBO) between the original and reproduced document orderings
         according to the following paper:
@@ -325,6 +325,8 @@ class RpdEvaluator(Evaluator):
         @param run_a_path: Path to another reproduced advanced run,
                            if not provided the reproduced advanced run of the RpdEvaluator object will be used instead.
         @param print_feedback: Boolean value indicating if feedback on progress should be printed.
+        @param misinfo: Use the RBO implementation that is also used in the TREC Health Misinformation Track.
+                        See also: https://github.com/claclark/Compatibility
         @return: Dictionary with RBO values that compare the document orderings of the original and reproduced runs.
         """
         if self.run_b_orig and run_b_path:
@@ -336,36 +338,36 @@ class RpdEvaluator(Evaluator):
                     run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
                     run_a_rep = pytrec_eval.parse_run(a_run)
                     run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
-                return {'baseline': RBO(self.run_b_orig, run_b_rep, pbar=print_feedback),
-                        'advanced': RBO(self.run_a_orig, run_a_rep, pbar=print_feedback)}
+                return {'baseline': RBO(self.run_b_orig, run_b_rep, pbar=print_feedback, misinfo=misinfo),
+                        'advanced': RBO(self.run_a_orig, run_a_rep, pbar=print_feedback, misinfo=misinfo)}
             else:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline run.")
                 with open(run_b_path, 'r') as b_run:
                     run_b_rep = pytrec_eval.parse_run(b_run)
                     run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                return {'baseline': RBO(self.run_b_orig, run_b_rep, pbar=print_feedback)}
+                return {'baseline': RBO(self.run_b_orig, run_b_rep, pbar=print_feedback, misinfo=misinfo)}
 
         if self.run_b_orig and run_b_rep:
             if self.run_a_orig and run_a_rep:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline and advanced run.")
-                return {'baseline': RBO(self.run_b_orig, run_b_rep, pbar=print_feedback),
-                        'advanced': RBO(self.run_a_orig, run_a_rep, pbar=print_feedback)}
+                return {'baseline': RBO(self.run_b_orig, run_b_rep, pbar=print_feedback, misinfo=misinfo),
+                        'advanced': RBO(self.run_a_orig, run_a_rep, pbar=print_feedback, misinfo=misinfo)}
             else:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline run.")
-                return {'baseline':  RBO(self.run_b_orig, run_b_rep, pbar=print_feedback)}
+                return {'baseline':  RBO(self.run_b_orig, run_b_rep, pbar=print_feedback, misinfo=misinfo)}
         if self.run_b_orig and self.run_b_rep:
             if self.run_a_orig and self.run_a_rep:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline and advanced run.")
-                return {'baseline': RBO(self.run_b_orig, self.run_b_rep, pbar=print_feedback),
-                        'advanced': RBO(self.run_a_orig, self.run_a_rep, pbar=print_feedback)}
+                return {'baseline': RBO(self.run_b_orig, self.run_b_rep, pbar=print_feedback, misinfo=misinfo),
+                        'advanced': RBO(self.run_a_orig, self.run_a_rep, pbar=print_feedback, misinfo=misinfo)}
             else:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline run.")
-                return {'baseline':  RBO(self.run_b_orig, self.run_b_rep, pbar=print_feedback)}
+                return {'baseline':  RBO(self.run_b_orig, self.run_b_rep, pbar=print_feedback, misinfo=misinfo)}
         else:
             print(ERR_MSG)
 
