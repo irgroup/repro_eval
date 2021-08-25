@@ -3,3 +3,11 @@ __pycache__/
 build/
 dist/
 repro_eval.egg-info/
+playground.py
+example/data/runs/
+example/orig_a.txt
+example/orig_b.txt
+example/rpd_a.txt
+example/rpd_b.txt
+example/rpl_a.txt
+example/rpl_b.txt
