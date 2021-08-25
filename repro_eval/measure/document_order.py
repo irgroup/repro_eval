@@ -44,7 +44,7 @@ def _ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False):
         union = list(sorted(set(orig_docs + rep_docs)))
         orig_idx = [union.index(doc) for doc in orig_docs]
         rep_idx = [union.index(doc) for doc in rep_docs]
-        yield topic, kendalltau(orig_idx, rep_idx).correlation
+        yield topic, round(kendalltau(orig_idx, rep_idx).correlation, 14)
 
 
 def ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False):
