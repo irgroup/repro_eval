@@ -4,6 +4,7 @@ from repro_eval.config import TRIM_THRESH, PHI
 from scipy.stats.stats import kendalltau
 from tqdm import tqdm
 from repro_eval.measure.external.rbo import rbo
+from repro_eval.util import break_ties
 
 
 def _rbo(run, ideal, p, depth):
@@ -24,6 +25,7 @@ def _rbo(run, ideal, p, depth):
         normalizer += weight
         weight *= p
     return score/normalizer
+
 
 def _ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False):
     """
@@ -61,6 +63,11 @@ def ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False):
     @param pbar: Boolean value indicating if progress bar should be printed.
     @return: Dictionary with KTU values that compare the document orderings of the original and reproduced runs.
     """
+
+    # Safety check for runs that are not added via pytrec_eval
+    orig_run = break_ties(orig_run)
+    rep_run = break_ties(rep_run)
+
     return dict(_ktau_union(orig_run, rep_run, trim_thresh=trim_thresh, pbar=pbar))
 
 
@@ -111,4 +118,9 @@ def RBO(orig_run, rep_run, phi=PHI, trim_thresh=TRIM_THRESH, pbar=False, misinfo
                     See also: https://github.com/claclark/Compatibility
     @return: Dictionary with RBO values that compare the document orderings of the original and reproduced runs.
     """
+
+    # Safety check for runs that are not added via pytrec_eval
+    orig_run = break_ties(orig_run)
+    rep_run = break_ties(rep_run)
+
     return dict(_RBO(orig_run, rep_run, phi=phi, trim_thresh=trim_thresh, pbar=pbar, misinfo=misinfo))

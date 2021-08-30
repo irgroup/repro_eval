@@ -1,3 +1,5 @@
+import itertools
+from collections import OrderedDict
 import numpy as np
 from repro_eval.config import TRIM_THRESH, exclude
 
@@ -112,3 +114,18 @@ def print_simple_line(measure, repro_measure, value):
     """
     print('{:25s}{:8s}{:.4f}'.format(measure, repro_measure, value))
 
+
+def break_ties(run):
+    """
+    Use this function to break score ties like it is implemented in trec_eval.
+    Documents with the same score will be sorted in reverse alphabetical order.
+    :param run: Run with score ties. Nested dictionary structure (cf. pytrec_eval)
+    :return: Reordered run
+    """
+    for topic, ranking in run.items():
+        docid_score_tuple = list(ranking.items())
+        reordered_ranking = []
+        for k, v in itertools.groupby(docid_score_tuple, lambda item: item[1]):
+            reordered_ranking.extend(sorted(v, reverse=True))
+        run[topic] = OrderedDict(reordered_ranking)
+    return run

@@ -1,5 +1,5 @@
 import pytrec_eval
-from repro_eval.util import trim
+from repro_eval.util import trim, break_ties
 from repro_eval.measure.statistics import ttest
 from repro_eval.measure.overall_effects import ER, deltaRI
 from repro_eval.measure.document_order import ktau_union as ktu, RBO
@@ -61,6 +61,7 @@ class Evaluator(object):
         @param run: If run is not None, only the provided run will be trimmed.
         """
         if run:
+            run = break_ties(run)
             if t:
                 trim(run, thresh=t)
             else:
@@ -68,24 +69,28 @@ class Evaluator(object):
             return
 
         if self.run_b_orig:
+            self.run_b_orig = break_ties(self.run_b_orig)
             if t:
                 trim(self.run_b_orig, thresh=t)
             else:
                 trim(self.run_b_orig)
 
         if self.run_a_orig:
+            self.run_a_orig = break_ties(self.run_a_orig)
             if t:
                 trim(self.run_a_orig, thresh=t)
             else:
                 trim(self.run_a_orig)
 
         if self.run_b_rep:
+            self.run_b_rep = break_ties(self.run_b_rep)
             if t:
                 trim(self.run_b_rep, thresh=t)
             else:
                 trim(self.run_b_rep)
 
         if self.run_a_rep:
+            self.run_a_rep = break_ties(self.run_a_rep)
             if t:
                 trim(self.run_a_rep, thresh=t)
             else:
@@ -98,8 +103,10 @@ class Evaluator(object):
         @param run: Reproduced or replicated run that will be evaluated.
         """
         if self.run_b_orig:
+            self.run_b_orig = break_ties(self.run_b_orig)
             self.run_b_orig_score = self.rel_eval.evaluate(self.run_b_orig)
         if self.run_a_orig:
+            self.run_a_orig = break_ties(self.run_a_orig)
             self.run_a_orig_score = self.rel_eval.evaluate(self.run_a_orig)
 
     def er(self, run_b_score=None, run_a_score=None, run_b_path=None, run_a_path=None, print_feedback=False):
@@ -242,8 +249,10 @@ class RpdEvaluator(Evaluator):
 
         super(RpdEvaluator, self).evaluate()
         if self.run_b_rep:
+            self.run_b_rep = break_ties(self.run_b_rep)
             self.run_b_rep_score = self.rel_eval.evaluate(self.run_b_rep)
         if self.run_a_rep:
+            self.run_a_rep = break_ties(self.run_a_rep)
             self.run_a_rep_score = self.rel_eval.evaluate(self.run_a_rep)
 
     def ktau_union(self, run_b_rep=None, run_a_rep=None, run_b_path=None, run_a_path=None, print_feedback=False):
@@ -560,8 +569,10 @@ class RplEvaluator(Evaluator):
 
         super(RplEvaluator, self).evaluate()
         if self.run_b_rep:
+            self.run_b_rep = break_ties(self.run_b_rep)
             self.run_b_rep_score = self.rel_eval_rpl.evaluate(self.run_b_rep)
         if self.run_a_rep:
+            self.run_a_rep = break_ties(self.run_a_rep)
             self.run_a_rep_score = self.rel_eval_rpl.evaluate(self.run_a_rep)
 
     def ttest(self, run_b_score=None, run_a_score=None, run_b_path=None, run_a_path=None, print_feedback=False):
