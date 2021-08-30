@@ -29,7 +29,7 @@ If you follow this [link](https://colab.research.google.com/github/irgroup/repro
 ### Setup
 Install via [PyPI](https://pypi.org/project/repro-eval):
 ```
-pip install repro_eval==0.3.2
+pip install repro_eval==0.3.3
 ```
 
 Install via GitHub repository:
