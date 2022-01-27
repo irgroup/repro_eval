@@ -1,34 +1,92 @@
+import os
 from io import BytesIO, TextIOWrapper
+from collections import defaultdict
 from ruamel.yaml import YAML
 from pytrec_eval import parse_run
 
-class MetadataWriter:
-    def __init__(self, run_path, template_path):
+
+class PrimadExperiment:
+    def __init__(self, reference, type, reproductions):
+        pass
+
+
+
+class MetadataAnalyzer:
+    def __init__(self, run_path):
+        self.reference_run_path = run_path
+        self.reference_run = MetadataHandler.strip_metadata(run_path)
+        self.reference_metadata = MetadataHandler.read_metadata(run_path)
+        
+        
+    def analyze_directory(self, dir_path):
+        files = os.listdir(dir_path)
+        
+        primad_types = {}
+
+        for _file in files:
+            file_path = os.path.join(dir_path, _file)
+            
+            if file_path == self.reference_run_path:
+                continue
+            
+            metadata = MetadataHandler.read_metadata(file_path)
+            
+            primad_str = ''
+                                        
+            for component in ['platform', 'research goal', 'implementation', 'method', 'actor', 'data']:
+                if self.reference_metadata[component] != metadata[component]:
+                    primad_str += component[0].upper()
+                else:
+                    primad_str += component[0]
+            
+            primad_types[file_path] = primad_str
+            
+        experiments = defaultdict(list)
+        for k, v in primad_types.items(): 
+            experiments[v].append(k)
+            
+        return experiments
+
+    
+
+
+class MetadataHandler:
+    def __init__(self, run_path, metadata_path=None):
         
         self.run_path = run_path
         
-        with open(template_path, "r") as f_in:
-            yaml = YAML(typ='safe')
-            self.metadata = yaml.load(f_in)
-    
+        if metadata_path:
+            self.metadata = MetadataHandler.read_metadata_file(metadata_path)
+        else:
+            self.metadata = MetadataHandler.read_metadata(run_path)
+        
     def get_metadata(self):
         
         return self.metadata
     
-    def set_metadata(self, metadata):
+    def set_metadata(self, metadata=None, metadata_path=None):
         
-        self.metadata = metadata
+        if metadata_path:
+            self.metadata = MetadataHandler.read_metadata_template(metadata_path)
+        
+        if metadata:
+            self.metadata = metadata
     
-    def dump_metadata(self, dump_name=None):
+    def dump_metadata(self, dump_path=None):
         
-        self.complete_metadata()
-              
-        f_out_name = self.metadata['tag'] if dump_name is None else dump_name
-        with open('_'.join([f_out_name,'dump.yml']), 'wb') as f_out:
-            bytes_io = BytesIO()
-            yaml = YAML()
-            yaml.dump(self.metadata, bytes_io)
-            f_out.write(bytes_io.getvalue())
+        if self.metadata:
+        
+            self.complete_metadata()
+                
+            tag = self.metadata['tag'] 
+            f_out_name = '_'.join([tag, 'dump.yml'])  
+            f_out_path = os.path.join(dump_path, f_out_name)    
+                
+            with open(f_out_path, 'wb') as f_out:
+                bytes_io = BytesIO()
+                yaml = YAML()
+                yaml.dump(self.metadata, bytes_io)
+                f_out.write(bytes_io.getvalue())
 
     def write_metadata(self, run_path=None):
         
@@ -60,13 +118,9 @@ class MetadataWriter:
     def complete_metadata(self):
         # TODO: Implement automatic completion of metadata
         pass
-
-
-class MetadataReader:
-    def __init__(self):
-        pass
     
-    def strip_metadata(self, annotated_run):
+    @staticmethod
+    def strip_metadata(annotated_run):
         """
         Strips off the metadata and returns a dict-version of the run that is parsed with pytrec_eval.
         """
@@ -82,11 +136,13 @@ class MetadataReader:
                         
         return run
 
-    
-    def read_metadata(self, run_path):
+    @staticmethod
+    def read_metadata(run_path):
         """
         Reads the metadata out of an annotated run and returns a dict containing the metadata.
         """
+        
+        metadata = None
         
         with open(run_path, 'r') as f_in: 
             lines = f_in.readlines()
@@ -102,4 +158,9 @@ class MetadataReader:
                 metadata = yaml.load(metadata_str)
         
         return metadata
-                
+    
+    @staticmethod
+    def read_metadata_template(template_path):
+        with open(template_path, "r") as f_in:
+            yaml = YAML(typ='safe')
+            return yaml.load(f_in)
