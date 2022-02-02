@@ -18,6 +18,9 @@ setup(name='repro_eval',
           'pytrec_eval',
           'numpy',
           'scipy',
-          'tqdm'
+          'tqdm',
+          'ruamel.yaml',
+          'GitPython',
+          'py-cpuinfo'
       ],
       zip_safe=False)
