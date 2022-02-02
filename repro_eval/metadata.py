@@ -441,7 +441,8 @@ class MetadataHandler:
         for _, _, files in os.walk('.'):
             for name in files:
                 _, file_extension = os.path.splitext(name)
-                if language := extensions.get(file_extension[1:]):
+                language = extensions.get(file_extension[1:])
+                if language:
                     languages.add(language)
 
         return {
