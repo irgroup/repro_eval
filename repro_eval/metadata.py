@@ -9,7 +9,7 @@ import cpuinfo
 import pytrec_eval
 import git
 from ruamel.yaml import YAML
-import Evaluator
+from repro_eval import Evaluator
 
 
 class PrimadExperiment:
