@@ -343,7 +343,7 @@ class MetadataHandler:
             
             self._metadata['platform'] = platform_dict
             
-        if self.metadata.get('implementation') is None: 
+        if self._metadata.get('implementation') is None: 
             self._metadata['implementation'] = self._get_src(repo_path=repo_path)
     
     @staticmethod
