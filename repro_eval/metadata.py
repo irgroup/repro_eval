@@ -424,7 +424,7 @@ class MetadataHandler:
     def _get_ram(self):
         memory_bytes = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES') 
         memory_gb = memory_bytes/(1024.0 ** 3)  
-        return {'ram': ' '.join([str(round(memory_gb, 2)),'GB'])}
+        return ' '.join([str(round(memory_gb, 2)),'GB'])
 
     def _get_libs(self):
         installed_packages = [d.project_name for d in pkg_resources.working_set]
