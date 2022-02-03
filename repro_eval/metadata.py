@@ -218,12 +218,12 @@ class MetadataAnalyzer:
             if file_path == self.reference_run_path:
                 continue
             
-            metadata = MetadataHandler.read_metadata(file_path)
+            _metadata = MetadataHandler.read_metadata(file_path)
             
             primad_str = ''
                                         
             for component in components:
-                if self.reference_metadata[component] != metadata[component]:
+                if self.reference_metadata[component] != _metadata[component]:
                     primad_str += component[0].upper()
                 else:
                     primad_str += component[0]
@@ -243,8 +243,8 @@ class MetadataAnalyzer:
 
         filtered_list = []
         for run in runs:
-            metadata = MetadataHandler.read_metadata(run)
-            baseline = metadata.get('research goal').get('evaluation').get('baseline')[0]
+            _metadata = MetadataHandler.read_metadata(run)
+            baseline = _metadata.get('research goal').get('evaluation').get('baseline')[0]
             if baseline == run_tag:
                 filtered_list.append(run)
                 
@@ -255,8 +255,8 @@ class MetadataAnalyzer:
         
         filtered_list = []
         for run in runs:
-            metadata = MetadataHandler.read_metadata(run)
-            name = metadata.get('data').get('test_collection').get('name')
+            _metadata = MetadataHandler.read_metadata(run)
+            name = _metadata.get('data').get('test_collection').get('name')
             if test_collection == name:
                 filtered_list.append(run)
                 
@@ -269,30 +269,30 @@ class MetadataHandler:
         self.run_path = run_path
         
         if metadata_path:
-            self.metadata = MetadataHandler.read_metadata_template(metadata_path)
+            self._metadata = MetadataHandler.read_metadata_template(metadata_path)
         else:
-            self.metadata = MetadataHandler.read_metadata(run_path)
+            self._metadata = MetadataHandler.read_metadata(run_path)
         
     def get_metadata(self):
         
-        return self.metadata
+        return self._metadata
     
-    def set_metadata(self, metadata=None, metadata_path=None):
+    def set_metadata(self, metadata_dict=None, metadata_path=None):
         
         if metadata_path:
-            self.metadata = MetadataHandler.read_metadata_template(metadata_path)
+            self._metadata = MetadataHandler.read_metadata_template(metadata_path)
         
-        if metadata:
-            self.metadata = metadata
+        if metadata_dict:
+            self._metadata = metadata_dict
     
     def dump_metadata(self, dump_path=None, complete_metadata=False, repo_path='.'):
                 
         if complete_metadata:
             self.complete_metadata(repo_path=repo_path)
             
-        if self.metadata:
+        if self._metadata:
                 
-            tag = self.metadata['tag'] 
+            tag = self._metadata['tag'] 
             f_out_name = '_'.join([tag, 'dump.yml'])  
             f_out_path = os.path.join(dump_path, f_out_name)    
                 
@@ -309,7 +309,7 @@ class MetadataHandler:
         
         bytes_io = BytesIO()
         yaml = YAML()
-        yaml.dump(self.metadata, bytes_io)
+        yaml.dump(self._metadata, bytes_io)
     
         byte_str = bytes_io.getvalue().decode('UTF-8')
         lines = byte_str.split('\n')
@@ -331,7 +331,7 @@ class MetadataHandler:
                     f_out.write(run_line)
                 
     def complete_metadata(self, repo_path='.'):
-        if self.metadata.get('platform') is None:
+        if self._metadata.get('platform') is None:
             platform_dict = {
                 'hardware': {
                     'cpu': self._get_cpu(),  
@@ -341,10 +341,10 @@ class MetadataHandler:
                 'software': self._get_libs(),
                 }
             
-            self.metadata['platform'] = platform_dict
+            self._metadata['platform'] = platform_dict
             
         if self.metadata.get('implementation') is None: 
-            self.metadata['implementation'] = self._get_src(repo_path=repo_path)
+            self._metadata['implementation'] = self._get_src(repo_path=repo_path)
     
     @staticmethod
     def strip_metadata(annotated_run):
@@ -369,7 +369,7 @@ class MetadataHandler:
         Reads the metadata out of an annotated run and returns a dict containing the metadata.
         '''
         
-        metadata = None
+        _metadata = None
         
         with open(run_path, 'r') as f_in: 
             lines = f_in.readlines()
@@ -382,9 +382,9 @@ class MetadataHandler:
                         metadata_str += line.strip('#')
                     else:
                         break
-                metadata = yaml.load(metadata_str)
+                _metadata = yaml.load(metadata_str)
         
-        return metadata
+        return _metadata
     
     @staticmethod
     def read_metadata_template(template_path):
