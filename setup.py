@@ -16,7 +16,7 @@ setup(name='repro_eval',
       packages=['repro_eval', 
                 'repro_eval.measure', 
                 'repro_eval.measure.external',
-                'repor_eval.resources'],
+                'repro_eval.resources',],
       install_requires=[
           'pytrec_eval',
           'numpy',
