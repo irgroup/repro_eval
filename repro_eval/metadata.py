@@ -293,7 +293,7 @@ class MetadataHandler:
         if self._metadata:
                 
             tag = self._metadata['tag'] 
-            f_out_name = '_'.join([tag, 'dump.yml'])  
+            f_out_name = '_'.join([tag, 'dump.yaml'])  
             f_out_path = os.path.join(dump_path, f_out_name)    
                 
             with open(f_out_path, 'wb') as f_out:
