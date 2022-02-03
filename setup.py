@@ -15,8 +15,7 @@ setup(name='repro_eval',
       license='MIT',
       packages=['repro_eval', 
                 'repro_eval.measure', 
-                'repro_eval.measure.external',
-                'repro_eval.resources',],
+                'repro_eval.measure.external'],
       install_requires=[
           'pytrec_eval',
           'numpy',
@@ -26,4 +25,6 @@ setup(name='repro_eval',
           'GitPython',
           'py-cpuinfo'
       ],
+      include_package_data=True,
+      package_data={'': ['resources/*.json']},
       zip_safe=False)
