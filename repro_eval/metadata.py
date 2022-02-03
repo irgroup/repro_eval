@@ -431,7 +431,9 @@ class MetadataHandler:
         return {'libraries': installed_packages}
 
     def _get_src(self, repo_path='.'):
-        extensions_path = './resources/extensions.json'
+        
+        extensions_path = pkg_resources.resource_filename(__name__, 'resources/extensions.json')
+
         repo = git.Repo(repo_path)
         
         with open(extensions_path, 'r') as input_file:
