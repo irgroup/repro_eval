@@ -299,7 +299,7 @@ class MetadataHandler:
             with open(f_out_path, 'wb') as f_out:
                 bytes_io = BytesIO()
                 yaml = YAML()
-                yaml.dump(self.metadata, bytes_io)
+                yaml.dump(self._metadata, bytes_io)
                 f_out.write(bytes_io.getvalue())
 
     def write_metadata(self, run_path=None, complete_metadata=False, repo_path='.'):
