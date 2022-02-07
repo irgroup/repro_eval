@@ -345,7 +345,7 @@ class MetadataAnalyzer:
         filtered_list = []
         for run in runs:
             _metadata = MetadataHandler.read_metadata(run)
-            name = _metadata.get('data').get('test_collection').get('name')
+            name = _metadata.get('data').get('test collection').get('name')
             if test_collection == name:
                 filtered_list.append(run)
                 
