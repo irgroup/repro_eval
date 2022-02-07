@@ -419,6 +419,7 @@ class MetadataHandler:
             with open(f_out_path, 'wb') as f_out:
                 bytes_io = BytesIO()
                 yaml = YAML()
+                yaml.width = 4096
                 yaml.dump(self._metadata, bytes_io)
                 f_out.write(bytes_io.getvalue())
 
@@ -438,6 +439,7 @@ class MetadataHandler:
         
         bytes_io = BytesIO()
         yaml = YAML()
+        yaml.width = 4096
         yaml.dump(self._metadata, bytes_io)
     
         byte_str = bytes_io.getvalue().decode('UTF-8')
