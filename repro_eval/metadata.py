@@ -450,10 +450,10 @@ class MetadataHandler:
         
         with open(f_out_path, 'w') as f_out:
             
-            f_out.write('# METADATA - START\n')
+            f_out.write('# ir_metadata.start\n')
             for line in lines[:-1]:
                 f_out.write(' '.join(['#', line, '\n']))            
-            f_out.write('# METADATA - END\n')
+            f_out.write('# ir_metadata.end\n')
             
             with open(self.run_path, 'r') as f_in:
                 for run_line in f_in.readlines():
@@ -520,12 +520,12 @@ class MetadataHandler:
         
         with open(run_path, 'r') as f_in: 
             lines = f_in.readlines()
-            if lines[0].strip('\n') == '# METADATA - START':
+            if lines[0].strip('\n') == '# ir_metadata.start':
                 metadata_str = ''
                 yaml=YAML(typ='safe')
 
                 for line in lines[1:]:
-                    if line.strip('\n') != '# METADATA - END':
+                    if line.strip('\n') != '# ir_metadata.end':
                         metadata_str += line.strip('#')
                     else:
                         break
