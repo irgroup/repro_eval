@@ -11,6 +11,8 @@ import git
 from ruamel.yaml import YAML
 from repro_eval import Evaluator
 
+META_START = '# ir_metadata.start'
+META_END = '# ir_metadata.end'
 
 class PrimadExperiment:
     """
@@ -32,9 +34,9 @@ class PrimadExperiment:
                       the experiments, i.e., it used to evaluate runs that are 
                       derived from the same test collection.
     @param rep_adv: List containing paths to run files that reproduce the 
-                     original (or reference) advanced run.
+                    original (or reference) advanced run.
     @param rpl_qrels: Qrels file that is used to evaluate the replicability of
-                      the experiments, i.e., it used to evaluate runs that are 
+                      the experiments, i.e., it is used to evaluate runs that are 
                       derived from a different test collection. Please note that 
                       "rpd_qrels" has to be provided too.
     """
@@ -53,7 +55,6 @@ class PrimadExperiment:
             self.ref_adv_run = None    
         
         self.primad = kwargs.get('primad', None)
-        
         self.rep_base = kwargs.get('rep_base', None)
         self.rpd_qrels = kwargs.get('rpd_qrels', None)
         self.rep_adv = kwargs.get('rep_adv', None)
@@ -452,10 +453,10 @@ class MetadataHandler:
         
         with open(f_out_path, 'w') as f_out:
             
-            f_out.write('# ir_metadata.start\n')
+            f_out.write(''.join([META_START, '\n']))
             for line in lines[:-1]:
                 f_out.write(' '.join(['#', line, '\n']))            
-            f_out.write('# ir_metadata.end\n')
+            f_out.write(''.join([META_END, '\n']))
             
             with open(self.run_path, 'r') as f_in:
                 for run_line in f_in.readlines():
@@ -522,12 +523,12 @@ class MetadataHandler:
         
         with open(run_path, 'r') as f_in: 
             lines = f_in.readlines()
-            if lines[0].strip('\n') == '# ir_metadata.start':
+            if lines[0].strip('\n') == META_START:
                 metadata_str = ''
                 yaml=YAML(typ='safe')
 
                 for line in lines[1:]:
-                    if line.strip('\n') != '# ir_metadata.end':
+                    if line.strip('\n') != META_END:
                         metadata_str += line.strip('#')
                     else:
                         break
@@ -574,7 +575,7 @@ class MetadataHandler:
             with open("/etc/os-release") as f_in:
                 os_info = {}
                 for line in f_in:
-                    k,v = line.rstrip().split("=")
+                    k,v = line.rstrip().split('=')
                     os_info[k] = v.strip('"')
                 
             distribution = os_info['PRETTY_NAME']
@@ -622,6 +623,7 @@ class MetadataHandler:
         
         with open(extensions_path, 'r') as input_file:
             extensions = json.load(input_file)
+            
         languages = set()
 
         for _, _, files in os.walk('.'):
