@@ -13,11 +13,18 @@ setup(name='repro_eval',
       author='Timo Breuer',
       author_email='timo.breuer@th-koeln.de',
       license='MIT',
-      packages=['repro_eval', 'repro_eval.measure', 'repro_eval.measure.external'],
+      packages=['repro_eval', 
+                'repro_eval.measure', 
+                'repro_eval.measure.external'],
       install_requires=[
           'pytrec_eval',
           'numpy',
           'scipy',
-          'tqdm'
+          'tqdm',
+          'ruamel.yaml',
+          'GitPython',
+          'py-cpuinfo'
       ],
+      include_package_data=True,
+      package_data={'': ['resources/*.json']},
       zip_safe=False)
