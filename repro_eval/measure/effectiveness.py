@@ -1,10 +1,8 @@
-"""Evaluation measures at the level of effectiveness."""
-
 import numpy as np
 from math import sqrt
 from copy import deepcopy
 from tqdm import tqdm
-from repro_eval.config import exclude
+from repro_eval import exclude
 
 
 def _rmse(orig_score, rep_core, pbar=False):
@@ -34,10 +32,7 @@ def _rmse(orig_score, rep_core, pbar=False):
 def rmse(orig_score, rep_score, pbar=False):
     """
     Determines the Root Mean Square Error (RMSE) between the original and reproduced topic scores
-    according to the following paper:
-    Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
-    How to Measure the Reproducibility of System-oriented IR Experiments.
-    Proceedings of SIGIR, pages 349-358, 2020.
+    according to the paper: https://dl.acm.org/doi/10.1145/3397271.3401036
 
     @param orig_score: The original scores.
     @param rep_core: The reproduced/replicated scores.

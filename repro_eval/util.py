@@ -1,7 +1,7 @@
 import itertools
 from collections import OrderedDict
 import numpy as np
-from repro_eval.config import TRIM_THRESH, exclude
+from repro_eval import TRIM_THRESH, exclude
 
 
 def trim(run, thresh=TRIM_THRESH):
@@ -11,16 +11,14 @@ def trim(run, thresh=TRIM_THRESH):
     @param run: The run to be trimmed.
     @param thresh: The threshold value of the run length.
     """
-    for topic, docs in run.items():
+    for topic, _ in run.items():
         run[topic] = dict(list(run[topic].items())[:thresh])
 
 
 def arp(topic_scores):
     """
-    This function computes the Average Retrieval Performance (ARP) according to the following paper:
-    Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
-    How to Measure the Reproducibility of System-oriented IR Experiments.
-    Proceedings of SIGIR, pages 349-358, 2020.
+    This function computes the Average Retrieval Performance (ARP), 
+    see also: https://dl.acm.org/doi/10.1145/3397271.3401036
 
     The ARP score is defined by the mean across the different topic scores of a run.
 
@@ -47,10 +45,8 @@ def _arp_scores(run):
 
 def arp_scores(run):
     """
-    This function computes the Average Retrieval Performance (ARP) scores according to the following paper:
-    Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
-    How to Measure the Reproducibility of System-oriented IR Experiments.
-    Proceedings of SIGIR, pages 349-358, 2020.
+    This function computes the Average Retrieval Performance (ARP) scores, 
+    see also: https://dl.acm.org/doi/10.1145/3397271.3401036
 
     The ARP score is defined by the mean across the different topic scores of a run.
     For all measures outputted by trec_eval, the ARP scores will be determined.

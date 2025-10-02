@@ -1,7 +1,7 @@
 import numpy as np
 from copy import deepcopy
 from tqdm import tqdm
-from repro_eval.config import exclude
+from repro_eval import exclude
 
 
 def diff(topic_score_a, topic_score_b):
@@ -79,15 +79,12 @@ def _er(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
     generator = tqdm(mi_rep.items()) if pbar else mi_rep.items()
 
     for measure, value in generator:
-        yield measure, value / mi_orig.get(measure)
+        yield measure, float(value / mi_orig.get(measure))
 
 
 def ER(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
     """
-    Determines the Effect Ratio (ER) according to the following paper:
-    Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
-    How to Measure the Reproducibility of System-oriented IR Experiments.
-    Proceedings of SIGIR, pages 349-358, 2020.
+    Determines the Effect Ratio (ER), see also: https://dl.acm.org/doi/10.1145/3397271.3401036
 
     The ER value is determined by the ratio between the mean improvements
     of the original and reproduced/replicated experiments.
@@ -170,15 +167,12 @@ def _deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
     generator = tqdm(rel_improve_orig.items()) if pbar else rel_improve_orig.items()
 
     for measure, ri in generator:
-        yield measure, ri - rel_improve_rep.get(measure)
+        yield measure, float(ri - rel_improve_rep.get(measure))
 
 
 def deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
     """
-    Determines the Delta Relative Improvement (DeltaRI) according to the following paper:
-    Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
-    How to Measure the Reproducibility of System-oriented IR Experiments.
-    Proceedings of SIGIR, pages 349-358, 2020.
+    Determines the Delta Relative Improvement (DeltaRI), see also: https://dl.acm.org/doi/10.1145/3397271.3401036
 
     The DeltaRI value is determined by the difference between the relative improvements
     of the original and reproduced/replicated experiments.

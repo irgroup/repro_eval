@@ -1,18 +1,16 @@
-"""Evaluation measures at the level of document orderings."""
-
-from repro_eval.config import TRIM_THRESH, PHI
+from repro_eval import TRIM_THRESH
 from scipy.stats.stats import kendalltau
 from tqdm import tqdm
-from repro_eval.measure.external.rbo import rbo
 from repro_eval.util import break_ties
+import numpy as np
 
 
 def _rbo(run, ideal, p, depth):
-    # Implementation taken from the TREC Health Misinformation Track with modifications
-    # see also: https://github.com/claclark/Compatibility
+    # Implementation reproduced from Clarke et al.
+    # paper: https://dl.acm.org/doi/10.1145/3451161
+    # code: https://github.com/claclark/Compatibility
     run_set = set()
     ideal_set = set()
-
     score = 0.0
     normalizer = 0.0
     weight = 1.0
@@ -40,22 +38,19 @@ def _ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False):
 
     generator = tqdm(rep_run.items()) if pbar else rep_run.items()
 
-    for topic, docs in generator:
+    for topic, _ in generator:
         orig_docs = list(orig_run.get(topic).keys())[:trim_thresh]
         rep_docs = list(rep_run.get(topic).keys())[:trim_thresh]
         union = list(sorted(set(orig_docs + rep_docs)))
         orig_idx = [union.index(doc) for doc in orig_docs]
         rep_idx = [union.index(doc) for doc in rep_docs]
-        yield topic, round(kendalltau(orig_idx, rep_idx).correlation, 14)
+        yield topic, float(round(kendalltau(orig_idx, rep_idx).correlation, 14))
 
 
-def ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False):
+def ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False, per_topic=False):
     """
-    Determines the Kendall's tau Union (KTU) between the original and reproduced document orderings
-    according to the following paper:
-    Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
-    How to Measure the Reproducibility of System-oriented IR Experiments.
-    Proceedings of SIGIR, pages 349-358, 2020.
+    Determines the Kendall's tau Union (KTU) between the original and reproduced document orderings,
+    see also: https://dl.acm.org/doi/10.1145/3397271.3401036
 
     @param orig_run: The original run.
     @param rep_run: The reproduced/replicated run.
@@ -67,11 +62,14 @@ def ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False):
     # Safety check for runs that are not added via pytrec_eval
     orig_run = break_ties(orig_run)
     rep_run = break_ties(rep_run)
+    ktu_per_topic = dict(_ktau_union(orig_run, rep_run, trim_thresh=trim_thresh, pbar=pbar))
+    if per_topic:
+        return ktu_per_topic  
+    else:
+        return float(np.mean(list(ktu_per_topic.values())))
 
-    return dict(_ktau_union(orig_run, rep_run, trim_thresh=trim_thresh, pbar=pbar))
 
-
-def _RBO(orig_run, rep_run, phi, trim_thresh=TRIM_THRESH, pbar=False, misinfo=True):
+def _RBO(orig_run, rep_run, p, depth, pbar=False):
     """
     Helping function returning a generator to determine the Rank-Biased Overlap (RBO) for all topics.
 
@@ -80,34 +78,23 @@ def _RBO(orig_run, rep_run, phi, trim_thresh=TRIM_THRESH, pbar=False, misinfo=Tr
     @param phi: Parameter for top-heaviness of the RBO.
     @param trim_thresh: Threshold values for the number of documents to be compared.
     @param pbar: Boolean value indicating if progress bar should be printed.
-    @param misinfo: Use the RBO implementation that is also used in the TREC Health Misinformation Track.
-                    See also: https://github.com/claclark/Compatibility
+    
     @return: Generator with RBO values.
     """
 
     generator = tqdm(rep_run.items()) if pbar else rep_run.items()
 
-    if misinfo:
-        for topic, docs in generator:
-            yield topic, _rbo(list(rep_run.get(topic).keys())[:trim_thresh],
-                              list(orig_run.get(topic).keys())[:trim_thresh],
-                              p=phi,
-                              depth=trim_thresh)
+    for topic, _ in generator:
+        yield topic, _rbo(list(rep_run.get(topic).keys()),
+                    list(orig_run.get(topic).keys()),
+                    p=p,
+                    depth=depth)
+        
 
-    else:
-        for topic, docs in generator:
-            yield topic, rbo(list(rep_run.get(topic).keys())[:trim_thresh],
-                             list(orig_run.get(topic).keys())[:trim_thresh],
-                             p=phi).ext
-
-
-def RBO(orig_run, rep_run, phi=PHI, trim_thresh=TRIM_THRESH, pbar=False, misinfo=True):
+def RBO(orig_run, rep_run, p, depth, pbar, per_topic):
     """
-    Determines the Rank-Biased Overlap (RBO) between the original and reproduced document orderings
-    according to the following paper:
-    Timo Breuer, Nicola Ferro, Norbert Fuhr, Maria Maistro, Tetsuya Sakai, Philipp Schaer, Ian Soboroff.
-    How to Measure the Reproducibility of System-oriented IR Experiments.
-    Proceedings of SIGIR, pages 349-358, 2020.
+    Determines the Rank-Biased Overlap (RBO) between the original and reproduced document orderings,
+    see also: https://dl.acm.org/doi/10.1145/3397271.3401036
 
     @param orig_run: The original run.
     @param rep_run: The reproduced/replicated run.
@@ -122,5 +109,8 @@ def RBO(orig_run, rep_run, phi=PHI, trim_thresh=TRIM_THRESH, pbar=False, misinfo
     # Safety check for runs that are not added via pytrec_eval
     orig_run = break_ties(orig_run)
     rep_run = break_ties(rep_run)
-
-    return dict(_RBO(orig_run, rep_run, phi=phi, trim_thresh=trim_thresh, pbar=pbar, misinfo=misinfo))
+    rbo_per_topic = dict(_RBO(orig_run, rep_run, p=p, depth=depth, pbar=pbar))
+    if per_topic:
+        return rbo_per_topic  
+    else:
+        return float(np.mean(list(rbo_per_topic.values())))
