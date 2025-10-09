@@ -101,10 +101,10 @@ def print_simple_line(measure, repro_measure, value):
     """
     Use this for printing lines with trec_eval and reproduction/replication measures.
     Pretty print output in trec_eval inspired style.
+    
     @param measure: Name of the trec_eval measure.
     @param repro_measure: Name of the reproduction/replication measure.
     @param value: Value of the evaluated run.
-    @return:
     """
     print('{:25s}{:8s}{:.4f}'.format(measure, repro_measure, value))
 
@@ -113,19 +113,27 @@ def break_ties(run):
     """
     Use this function to break score ties like it is implemented in trec_eval.
     Documents with the same score will be sorted in reverse alphabetical order.
-    :param run: Run with score ties. Nested dictionary structure (cf. pytrec_eval)
-    :return: Reordered run
+    
+    @param run: Run with score ties. Nested dictionary structure (cf. pytrec_eval)
+    @return: Reordered run
     """
     for topic, ranking in run.items():
         docid_score_tuple = list(ranking.items())
         reordered_ranking = []
-        for k, v in itertools.groupby(docid_score_tuple, lambda item: item[1]):
+        for _, v in itertools.groupby(docid_score_tuple, lambda item: item[1]):
             reordered_ranking.extend(sorted(v, reverse=True))
         run[topic] = OrderedDict(reordered_ranking)
     return run
 
 
-def load_run(path): 
+def load_run(path):
+    """
+    Use this function to load a run in TREC-format with the help of ir_measures. 
+    Documents with the same score will be sorted in reverse alphabetical order.
+    
+    @param path: Path to the run file.
+    @return: Reordered run in a nested dictionary.
+    """
     run = ir_measures.read_trec_run(path)
     nested_run = defaultdict(dict)
     for sd in run:
@@ -136,6 +144,12 @@ def load_run(path):
 
 
 def load_qrels(path):
+    """
+    Use this function to load a qrels file in TREC-format with the help of ir_measures. 
+    
+    @param path: Path to the qrels file.
+    @return: Relevance labels in a nested dictionary.
+    """
     qrels = ir_measures.read_trec_qrels(path)
     nested_qrels = defaultdict(dict)
     for d in qrels:
@@ -146,12 +160,16 @@ def load_qrels(path):
 
 
 def load_measures():
+    """
+    Use this function to load retrieval measures that will be evaluated. 
+    
+    @return: List with measures following the naming convention of ir_measures.
+    """
     measures = []
     trec_eval_measures = [
         'P', 'recall', 'ndcg', 'ndcg_cut', 'map_cut', 
         'set_map', 'set_P', 'set_relative_P', 'set_recall', 'set_F', 
         'Rprec', 'infAP', 'bpref', 'recip_rank', 'map', 'iprec_at_recall'
-        # 'num_rel_ret', 'num_ret', 'num_rel', 'num_q', 
         ]
     for trec_eval_measure in trec_eval_measures:
         measures += ir_measures.convert_trec_name(trec_eval_measure) 
@@ -160,6 +178,14 @@ def load_measures():
 
 
 def evaluate_run(measures, qrels, run):
+    """
+    Use this function to evaluate a run with the provided measures and qrels. 
+    
+    @param measures: List with a set of measures, cf. load_measures().
+    @param qrels: The relevance labels (qrels), cf. load_qrels().
+    @param run: The run to be evaluated, cf. load_run().
+    @return: List with measures following ir_measures naming convention.
+    """
     per_topic_results = pd.DataFrame(ir_measures.calc(measures, qrels, run)[1])
     return {
         qid: dict(zip(g["measure"].astype(str), g["value"]))

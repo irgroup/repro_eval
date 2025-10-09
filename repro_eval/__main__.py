@@ -20,7 +20,6 @@ evaluation measures will be printed.
 import argparse
 from repro_eval.Evaluator import RpdEvaluator, RplEvaluator
 from repro_eval.util import print_simple_line, print_base_adv
-from repro_eval.util import arp
 
 
 def main():

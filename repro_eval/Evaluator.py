@@ -95,10 +95,10 @@ class Evaluator(object):
         The ER value is determined by the ratio between the mean improvements
         of the original and reproduced/replicated experiments.
 
-        @param run_b_score: Scores of the baseline run,
-                            if not provided the scores of the RpdEvaluator object will be used instead.
-        @param run_a_score: Scores of the advanced run,
-                            if not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_b_score: Scores of the baseline run. If not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_a_score: Scores of the advanced run. If not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_b_path: Path to the baseline run file (prioritized over run_b_score).
+        @param run_a_path: Path to the advanced run file s(prioritized over run_a_score).
         @param print_feedback: Boolean value indicating if feedback on progress should be printed.
         @return: Dictionary containing the ER values for the specified run combination.
         """
@@ -132,10 +132,10 @@ class Evaluator(object):
         The DeltaRI value is determined by the difference between the relative improvements
         of the original and reproduced/replicated experiments.
 
-        @param run_b_score: Scores of the baseline run,
-                            if not provided the scores of the RpdEvaluator object will be used instead.
-        @param run_a_score: Scores of the advanced run,
-                            if not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_b_score: Scores of the baseline run. If not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_a_score: Scores of the advanced run. If not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_b_path: Path to the baseline run file (prioritized over run_b_score).
+        @param run_a_path: Path to the advanced run file s(prioritized over run_a_score).
         @param print_feedback: Boolean value indicating if feedback on progress should be printed.
         @return: Dictionary containing the DRI values for the specified run combination.
         """
@@ -168,10 +168,9 @@ class Evaluator(object):
         see also: https://dl.acm.org/doi/10.1145/3397271.3401036
 
         @param rpd: Boolean indicating if the evaluated runs are reproduced.
-        @param run_b_score: Scores of the baseline run,
-                            if not provided the scores of the RpdEvaluator object will be used instead.
-        @param run_a_score: Scores of the advanced run,
-                            if not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_b_score: Scores of the baseline run. If not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_a_score: Scores of the advanced run. If not provided the scores of the RpdEvaluator object will be used instead.
+        @param run_b_path: Path to the baseline run file (prioritized over run_b_score)..
         @param print_feedback: Boolean value indicating if feedback on progress should be printed.
         @return: Dictionary with p-values that compare the score distributions of the baseline and advanced run.
         """
@@ -209,8 +208,10 @@ class RpdEvaluator(Evaluator):
         Evaluates the scores of the original and reproduced baseline and advanced runs.
         If a (reproduced) run is provided only this one will be evaluated and a dictionary with the corresponding
         scores is returned.
-        @param run: A reproduced run. If not specified, the original and reproduced runs of the the RpdEvaluator will
-                    be used instead.
+
+        @param run: A reproduced run provided as nested dicitionary. If it is not specified, the original and 
+                    reproduced runs of the the RpdEvaluator will be used instead.
+        @param run_path: File path to a reproduced run (prioritized over 'run' parameter).
         @return: If run is specified, a dictionary with the corresponding scores is returned.
         """
         if run or run_path:
@@ -240,6 +241,7 @@ class RpdEvaluator(Evaluator):
                            if not provided the reproduced baseline run of the RpdEvaluator object will be used instead.
         @param run_a_path: Path to another reproduced advanced run,
                            if not provided the reproduced advanced run of the RpdEvaluator object will be used instead.
+        @param per_topic: If per_topic=True the method returns a dictionary with KTU scores for each topic.
         @param print_feedback: Boolean value indicating if feedback on progress should be printed.
         @return: Dictionary with KTU values that compare the document orderings of the original and reproduced runs.
         """
@@ -295,8 +297,12 @@ class RpdEvaluator(Evaluator):
                            if not provided the reproduced baseline run of the RpdEvaluator object will be used instead.
         @param run_a_path: Path to another reproduced advanced run,
                            if not provided the reproduced advanced run of the RpdEvaluator object will be used instead.
+        @param p: The parameter p (0 < p < 1) captures how patient or persistent the searcher is, 
+                  with larger values reflecting a higher willingness to continue searching.
+        @param depth: The maximum depth to which the rankings are compared.
+        @param per_topic: If per_topic=True the method returns a dictionary with RBO scores for each topic.
         @param print_feedback: Boolean value indicating if feedback on progress should be printed.
-        @return: Dictionary with RBO values that compare the document orderings of the original and reproduced runs.
+        @return: Dictionary with RBO values if (per_topic=True), otherwise a single aggregated score is returned.
         """
         if self.run_b_orig and run_b_path:
             if self.run_a_orig and run_a_path:
@@ -496,6 +502,9 @@ class RplEvaluator(Evaluator):
         scores is returned.
         @param run: A replicated run. If not specified, the original and replicated runs of the the RplEvaluator will
                     be used instead.
+        @param run_path: File path to a replicated run (prioritized over 'run' parameter).
+        @param rpl: If rpl=True, the qrels file of the replicated run (based on another test collection) is used for the evaluation.
+                    Otherwise, the qrels file of the original test collection is used.
         @return: If run is specified, a dictionary with the corresponding scores is returned.
         """
         if run or run_path:
