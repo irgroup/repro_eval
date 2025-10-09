@@ -1,4 +1,4 @@
-from repro_eval import TRIM_THRESH
+from repro_eval import RUN_LENGTH
 from scipy.stats.stats import kendalltau
 from tqdm import tqdm
 from repro_eval.util import break_ties
@@ -25,7 +25,7 @@ def _rbo(run, ideal, p, depth):
     return score/normalizer
 
 
-def _ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False):
+def _KTU(orig_run, rep_run, trim_thresh=RUN_LENGTH, pbar=False):
     """
     Helping function returning a generator to determine Kendall's tau Union (KTU) for all topics.
 
@@ -47,7 +47,7 @@ def _ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False):
         yield topic, float(round(kendalltau(orig_idx, rep_idx).correlation, 14))
 
 
-def ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False, per_topic=False):
+def KTU(orig_run, rep_run, trim_thresh=RUN_LENGTH, pbar=False, per_topic=False):
     """
     Determines the Kendall's tau Union (KTU) between the original and reproduced document orderings,
     see also: https://dl.acm.org/doi/10.1145/3397271.3401036
@@ -62,7 +62,7 @@ def ktau_union(orig_run, rep_run, trim_thresh=TRIM_THRESH, pbar=False, per_topic
     # Safety check for runs that are not added via pytrec_eval
     orig_run = break_ties(orig_run)
     rep_run = break_ties(rep_run)
-    ktu_per_topic = dict(_ktau_union(orig_run, rep_run, trim_thresh=trim_thresh, pbar=pbar))
+    ktu_per_topic = dict(_KTU(orig_run, rep_run, trim_thresh=trim_thresh, pbar=pbar))
     if per_topic:
         return ktu_per_topic  
     else:

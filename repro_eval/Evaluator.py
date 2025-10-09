@@ -1,47 +1,9 @@
-import ir_measures
-from ir_measures import *
-import pandas as pd
-from collections import defaultdict
-from repro_eval.util import trim, break_ties
+from repro_eval.util import trim_run, break_ties, load_run, load_qrels, load_measures, evaluate_run
 from repro_eval.measure.statistics import ttest
-from repro_eval.measure.overall_effects import ER, deltaRI
-from repro_eval.measure.document_order import ktau_union, RBO
-from repro_eval.measure.effectiveness import rmse as RMSE, nrmse as nRMSE
-from repro_eval import ERR_MSG, RBO_DEPTH, RBO_P
-
-
-def load_run(path): 
-    run = ir_measures.read_trec_run(path)
-    nested_run = defaultdict(dict)
-    for sd in run:
-        nested_run[sd.query_id][sd.doc_id] = sd.score
-    nested_run = dict(nested_run)
-    nested_run = {t: nested_run[t] for t in sorted(nested_run)}
-    return nested_run
-
-
-def load_qrels(path):
-    qrels = ir_measures.read_trec_qrels(path)
-    nested_qrels = defaultdict(dict)
-    for d in qrels:
-        nested_qrels[d.query_id][d.doc_id] = d.relevance
-    nested_qrels = dict(nested_qrels)
-    nested_qrels = {t: nested_qrels[t] for t in sorted(nested_qrels)}
-    return nested_qrels
-
-
-def load_measures():
-    measures = []
-    trec_eval_measures = [
-        'P', 'recall', 'ndcg', 'ndcg_cut', 'map_cut', 
-        'set_map', 'set_P', 'set_relative_P', 'set_recall', 'set_F', 
-        'Rprec', 'infAP', 'bpref', 'recip_rank', 'map', 'iprec_at_recall'
-        # 'num_rel_ret', 'num_ret', 'num_rel', 'num_q', 
-        ]
-    for trec_eval_measure in trec_eval_measures:
-        measures += ir_measures.convert_trec_name(trec_eval_measure) 
-    parsed_measures = [ir_measures.parse_measure(measure) for measure in measures]
-    return parsed_measures
+from repro_eval.measure.overall_effects import ER, DRI
+from repro_eval.measure.document_order import KTU, RBO
+from repro_eval.measure.effectiveness import RMSE, nRMSE
+from repro_eval import RUN_LENGTH, ERR_MSG, RBO_DEPTH, RBO_P
 
 
 class Evaluator(object):
@@ -68,7 +30,7 @@ class Evaluator(object):
         self.measures = load_measures()
 
 
-    def trim(self, t=None, run=None):
+    def trim(self, t=RUN_LENGTH, run=None):
         """
         Trims all runs of the Evaluator to the length specified by the threshold value t.
 
@@ -78,38 +40,38 @@ class Evaluator(object):
         if run:
             run = break_ties(run)
             if t:
-                trim(run, thresh=t)
+                trim_run(run, thresh=t)
             else:
-                trim(run)
+                trim_run(run)
             return
 
         if self.run_b_orig:
             self.run_b_orig = break_ties(self.run_b_orig)
             if t:
-                trim(self.run_b_orig, thresh=t)
+                trim_run(self.run_b_orig, thresh=t)
             else:
-                trim(self.run_b_orig)
+                trim_run(self.run_b_orig)
 
         if self.run_a_orig:
             self.run_a_orig = break_ties(self.run_a_orig)
             if t:
-                trim(self.run_a_orig, thresh=t)
+                trim_run(self.run_a_orig, thresh=t)
             else:
-                trim(self.run_a_orig)
+                trim_run(self.run_a_orig)
 
         if self.run_b_rep:
             self.run_b_rep = break_ties(self.run_b_rep)
             if t:
-                trim(self.run_b_rep, thresh=t)
+                trim_run(self.run_b_rep, thresh=t)
             else:
-                trim(self.run_b_rep)
+                trim_run(self.run_b_rep)
 
         if self.run_a_rep:
             self.run_a_rep = break_ties(self.run_a_rep)
             if t:
-                trim(self.run_a_rep, thresh=t)
+                trim_run(self.run_a_rep, thresh=t)
             else:
-                trim(self.run_a_rep)
+                trim_run(self.run_a_rep)
 
     def evaluate(self):
         """
@@ -120,19 +82,11 @@ class Evaluator(object):
 
         if self.run_b_orig:
             self.run_b_orig = break_ties(self.run_b_orig)
-            per_topic_results = pd.DataFrame(ir_measures.calc(self.measures, self.qrels_orig, self.run_b_orig)[1])
-            self.run_b_orig_score =  {
-                qid: dict(zip(g["measure"].astype(str), g["value"]))
-                for qid, g in per_topic_results.groupby("query_id")
-            }
+            self.run_b_orig_score = evaluate_run(self.measures, self.qrels_orig, self.run_b_orig)
 
         if self.run_a_orig:
             self.run_a_orig = break_ties(self.run_a_orig)
-            per_topic_results = pd.DataFrame(ir_measures.calc(self.measures, self.qrels_orig, self.run_a_orig)[1])
-            self.run_a_orig_score =  {
-                qid: dict(zip(g["measure"].astype(str), g["value"]))
-                for qid, g in per_topic_results.groupby("query_id")
-            }
+            self.run_a_orig_score = evaluate_run(self.measures, self.qrels_orig, self.run_a_orig)
 
     def er(self, run_b_score=None, run_a_score=None, run_b_path=None, run_a_path=None, print_feedback=False):
         """
@@ -152,13 +106,11 @@ class Evaluator(object):
             print('Determining Effect Ratio (ER)')
 
         if self.run_b_orig_score and self.run_a_orig_score and run_b_path and run_a_path:
-            with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
-                run_b_rep = pytrec_eval.parse_run(b_run)
-                run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                run_b_rep_score = self.rel_eval_rpl.evaluate(run_b_rep) if hasattr(self, 'rel_eval_rpl') else self.rel_eval.evaluate(run_b_rep)
-                run_a_rep = pytrec_eval.parse_run(a_run)
-                run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
-                run_a_rep_score = self.rel_eval_rpl.evaluate(run_a_rep) if hasattr(self, 'rel_eval_rpl') else self.rel_eval.evaluate(run_a_rep)
+            qrels = self.qrels_rpl if hasattr(self, 'qrels_rpl') else self.qrels_orig
+            run_b_rep = load_run(run_b_path)
+            run_b_rep_score = evaluate_run(self.measures, qrels, run_b_rep)
+            run_a_rep = load_run(run_a_path)
+            run_a_rep_score = evaluate_run(self.measures, qrels, run_a_rep)
             return ER(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
                       rep_score_b=run_b_rep_score, rep_score_a=run_a_rep_score, pbar=print_feedback)
 
@@ -171,6 +123,7 @@ class Evaluator(object):
                       rep_score_b=self.run_b_rep_score, rep_score_a=self.run_a_rep_score, pbar=print_feedback)
         else:
             print(ERR_MSG)
+
 
     def dri(self, run_b_score=None, run_a_score=None, run_b_path=None, run_a_path=None, print_feedback=False):
         """
@@ -190,25 +143,24 @@ class Evaluator(object):
             print('Determining Delta Relative Improvement (DRI)')
 
         if self.run_b_orig_score and self.run_a_orig_score and run_b_path and run_a_path:
-            with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
-                run_b_rep = pytrec_eval.parse_run(b_run)
-                run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                run_b_rep_score = self.rel_eval_rpl.evaluate(run_b_rep) if hasattr(self, 'rel_eval_rpl') else self.rel_eval.evaluate(run_b_rep)
-                run_a_rep = pytrec_eval.parse_run(a_run)
-                run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
-                run_a_rep_score = self.rel_eval_rpl.evaluate(run_a_rep) if hasattr(self, 'rel_eval_rpl') else self.rel_eval.evaluate(run_a_rep)
-            return deltaRI(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
-                           rep_score_b=run_b_rep_score, rep_score_a=run_a_rep_score, pbar=print_feedback)
+            qrels = self.qrels_rpl if hasattr(self, 'qrels_rpl') else self.qrels_orig
+            run_b_rep = load_run(run_b_path)
+            run_b_rep_score = evaluate_run(self.measures, qrels, run_b_rep)
+            run_a_rep = load_run(run_a_path)
+            run_a_rep_score = evaluate_run(self.measures, qrels, run_a_rep)
+            return DRI(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
+                       rep_score_b=run_b_rep_score, rep_score_a=run_a_rep_score, pbar=print_feedback)
 
         if self.run_b_orig_score and self.run_a_orig_score and run_b_score and run_a_score:
-            return deltaRI(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
-                           rep_score_b=run_b_score, rep_score_a=run_a_score, pbar=print_feedback)
+            return DRI(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
+                       rep_score_b=run_b_score, rep_score_a=run_a_score, pbar=print_feedback)
 
         if self.run_b_orig_score and self.run_a_orig_score and self.run_b_rep_score and self.run_a_rep_score:
-            return deltaRI(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
-                           rep_score_b=self.run_b_rep_score, rep_score_a=self.run_a_rep_score, pbar=print_feedback)
+            return DRI(orig_score_b=self.run_b_orig_score, orig_score_a=self.run_a_orig_score,
+                       rep_score_b=self.run_b_rep_score, rep_score_a=self.run_a_rep_score, pbar=print_feedback)
         else:
             print(ERR_MSG)
+
 
     def _ttest(self, rpd=True, run_b_score=None, run_a_score=None, print_feedback=False):
         """
@@ -264,28 +216,16 @@ class RpdEvaluator(Evaluator):
         if run or run_path:
             run = load_run(run_path) if run_path else run
             run = break_ties(run)
-            per_topic_results = pd.DataFrame(ir_measures.calc(self.measures, self.qrels_orig, run)[1])
-            return  {
-                qid: dict(zip(g["measure"].astype(str), g["value"]))
-                for qid, g in per_topic_results.groupby("query_id")
-            }
+            return evaluate_run(self.measures, self.qrels_orig, run)
 
         super(RpdEvaluator, self).evaluate()
 
         if self.run_b_rep:
             self.run_b_rep = break_ties(self.run_b_rep)
-            per_topic_results = pd.DataFrame(ir_measures.calc(self.measures, self.qrels_orig, self.run_b_rep)[1])
-            self.run_b_rep_score =  {
-                qid: dict(zip(g["measure"].astype(str), g["value"]))
-                for qid, g in per_topic_results.groupby("query_id")
-            }
+            self.run_b_rep_score = evaluate_run(self.measures, self.qrels_orig, self.run_b_rep)
         if self.run_a_rep:
             self.run_a_rep = break_ties(self.run_a_rep)
-            per_topic_results = pd.DataFrame(ir_measures.calc(self.measures, self.qrels_orig, self.run_a_rep)[1])
-            self.run_a_rep_score =  {
-                qid: dict(zip(g["measure"].astype(str), g["value"]))
-                for qid, g in per_topic_results.groupby("query_id")
-            }
+            self.run_a_rep_score = evaluate_run(self.measures, self.qrels_orig, self.run_a_rep)
 
     def ktu(self, run_b_rep=None, run_a_rep=None, run_b_path=None, run_a_path=None, print_feedback=False, per_topic=False):
         """
@@ -307,44 +247,40 @@ class RpdEvaluator(Evaluator):
             if self.run_a_orig and run_a_path:
                 if print_feedback:
                     print("Determining Kendall's tau Union (KTU) for baseline and advanced run.")
-                with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                    run_a_rep = pytrec_eval.parse_run(a_run)
-                    run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
-                return {'baseline': ktau_union(self.run_b_orig, run_b_rep, pbar=print_feedback, per_topic=per_topic),
-                        'advanced': ktau_union(self.run_a_orig, run_a_rep, pbar=print_feedback, per_topic=per_topic)}
+                run_b_rep = load_run(run_b_path)
+                run_a_rep = load_run(run_a_path)
+                return {'baseline': KTU(self.run_b_orig, run_b_rep, pbar=print_feedback, per_topic=per_topic),
+                        'advanced': KTU(self.run_a_orig, run_a_rep, pbar=print_feedback, per_topic=per_topic)}
             else:
                 if print_feedback:
                     print("Determining Kendall's tau Union (KTU) for baseline run.")
-                with open(run_b_path, 'r') as b_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                return {'baseline': ktau_union(self.run_b_orig, run_b_rep, pbar=print_feedback, per_topic=per_topic)}
+                run_b_rep = load_run(run_b_path)
+                return {'baseline': KTU(self.run_b_orig, run_b_rep, pbar=print_feedback, per_topic=per_topic)}
 
         if self.run_b_orig and run_b_rep:
             if self.run_a_orig and run_a_rep:
                 if print_feedback:
                     print("Determining Kendall's tau Union (KTU) for baseline and advanced run.")
-                return {'baseline': ktau_union(self.run_b_orig, run_b_rep, pbar=print_feedback, per_topic=per_topic),
-                        'advanced': ktau_union(self.run_a_orig, run_a_rep, pbar=print_feedback, per_topic=per_topic)}
+                return {'baseline': KTU(self.run_b_orig, run_b_rep, pbar=print_feedback, per_topic=per_topic),
+                        'advanced': KTU(self.run_a_orig, run_a_rep, pbar=print_feedback, per_topic=per_topic)}
             else:
                 if print_feedback:
                     print("Determining Kendall's tau Union (KTU) for baseline run.")
-                return {'baseline':  ktau_union(self.run_b_orig, run_b_rep, pbar=print_feedback, per_topic=per_topic)}
+                return {'baseline':  KTU(self.run_b_orig, run_b_rep, pbar=print_feedback, per_topic=per_topic)}
 
         if self.run_b_orig and self.run_b_rep:
             if self.run_a_orig and self.run_a_rep:
                 if print_feedback:
                     print("Determining Kendall's tau Union (KTU) for baseline and advanced run.")
-                return {'baseline': ktau_union(self.run_b_orig, self.run_b_rep, pbar=print_feedback, per_topic=per_topic),
-                        'advanced': ktau_union(self.run_a_orig, self.run_a_rep, pbar=print_feedback, per_topic=per_topic)}
+                return {'baseline': KTU(self.run_b_orig, self.run_b_rep, pbar=print_feedback, per_topic=per_topic),
+                        'advanced': KTU(self.run_a_orig, self.run_a_rep, pbar=print_feedback, per_topic=per_topic)}
             else:
                 if print_feedback:
                     print("Determining Kendall's tau Union (KTU) for baseline run.")
-                return {'baseline':  ktau_union(self.run_b_orig, self.run_b_rep, pbar=print_feedback, per_topic=per_topic)}
+                return {'baseline':  KTU(self.run_b_orig, self.run_b_rep, pbar=print_feedback, per_topic=per_topic)}
         else:
             print(ERR_MSG)
+
 
     def rbo(self, run_b_rep=None, run_a_rep=None, run_b_path=None, run_a_path=None, print_feedback=False, p=RBO_P, depth=RBO_DEPTH, per_topic=False):
         """
@@ -360,27 +296,20 @@ class RpdEvaluator(Evaluator):
         @param run_a_path: Path to another reproduced advanced run,
                            if not provided the reproduced advanced run of the RpdEvaluator object will be used instead.
         @param print_feedback: Boolean value indicating if feedback on progress should be printed.
-        @param misinfo: Use the RBO implementation that is also used in the TREC Health Misinformation Track.
-                        See also: https://github.com/claclark/Compatibility
         @return: Dictionary with RBO values that compare the document orderings of the original and reproduced runs.
         """
         if self.run_b_orig and run_b_path:
             if self.run_a_orig and run_a_path:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline and advanced run.")
-                with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                    run_a_rep = pytrec_eval.parse_run(a_run)
-                    run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
+                run_b_rep = load_run(run_b_path)
+                run_a_rep = load_run(run_a_path)
                 return {'baseline': RBO(self.run_b_orig, run_b_rep, pbar=print_feedback, p=p, depth=depth, per_topic=per_topic),
                         'advanced': RBO(self.run_a_orig, run_a_rep, pbar=print_feedback, p=p, depth=depth, per_topic=per_topic)}
             else:
                 if print_feedback:
                     print("Determining Rank-biased Overlap (RBO) for baseline run.")
-                with open(run_b_path, 'r') as b_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
+                run_b_rep = load_run(run_b_path)
                 return {'baseline': RBO(self.run_b_orig, run_b_rep, pbar=print_feedback, p=p, depth=depth, per_topic=per_topic)}
 
         if self.run_b_orig and run_b_rep:
@@ -426,22 +355,17 @@ class RpdEvaluator(Evaluator):
             if self.run_a_orig and run_a_path:
                 if print_feedback:
                     print("Determining Root Mean Square Error (RMSE) for baseline and advanced run.")
-                with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                    run_b_rep_score = self.rel_eval.evaluate(run_b_rep)
-                    run_a_rep = pytrec_eval.parse_run(a_run)
-                    run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
-                    run_a_rep_score = self.rel_eval.evaluate(run_a_rep)
+                run_b_rep = load_run(run_b_path)
+                run_b_rep_score = evaluate_run(self.measures, self.qrels_orig, run_b_rep)
+                run_a_rep = load_run(run_a_path)
+                run_a_rep_score = evaluate_run(self.measures, self.qrels_orig, run_a_rep)
                 return {'baseline': RMSE(self.run_b_orig_score, run_b_rep_score, pbar=print_feedback),
                         'advanced': RMSE(self.run_a_orig_score, run_a_rep_score, pbar=print_feedback)}
             else:
                 if print_feedback:
                     print("Determining Root Mean Square Error (RMSE) for baseline run.")
-                with open(run_b_path, 'r') as b_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                    run_b_rep_score = self.rel_eval.evaluate(run_b_rep)
+                run_b_rep = load_run(run_b_path)
+                run_b_rep_score = evaluate_run(self.measures, self.qrels_orig, run_b_rep)
                 return {'baseline': RMSE(self.run_b_orig_score, run_b_rep_score, pbar=print_feedback)}
 
         if self.run_b_orig_score and run_b_score:
@@ -487,22 +411,17 @@ class RpdEvaluator(Evaluator):
             if self.run_a_orig and run_a_path:
                 if print_feedback:
                     print("Determining normalized Root Mean Square Error (RMSE) for baseline and advanced run.")
-                with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                    run_b_rep_score = self.rel_eval.evaluate(run_b_rep)
-                    run_a_rep = pytrec_eval.parse_run(a_run)
-                    run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
-                    run_a_rep_score = self.rel_eval.evaluate(run_a_rep)
+                run_b_rep = load_run(run_b_path)
+                run_b_rep_score = evaluate_run(self.measures, self.qrels_orig, run_b_rep)
+                run_a_rep = load_run(run_a_path)
+                run_a_rep_score = evaluate_run(self.measures, self.qrels_orig, run_a_rep)
                 return {'baseline': nRMSE(self.run_b_orig_score, run_b_rep_score, pbar=print_feedback),
                         'advanced': nRMSE(self.run_a_orig_score, run_a_rep_score, pbar=print_feedback)}
             else:
                 if print_feedback:
                     print("Determining normalized Root Mean Square Error (RMSE) for baseline run.")
-                with open(run_b_path, 'r') as b_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                    run_b_rep_score = self.rel_eval.evaluate(run_b_rep)
+                run_b_rep = load_run(run_b_path)
+                run_b_rep_score = evaluate_run(self.measures, self.qrels_orig, run_b_rep)
                 return {'baseline': nRMSE(self.run_b_orig_score, run_b_rep_score, pbar=print_feedback)}
 
         if self.run_b_orig_score and run_b_score:
@@ -546,19 +465,14 @@ class RpdEvaluator(Evaluator):
         """
         if run_b_path:
             if run_a_path:
-                with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                    run_b_rep_score = self.rel_eval.evaluate(run_b_rep)
-                    run_a_rep = pytrec_eval.parse_run(a_run)
-                    run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
-                    run_a_rep_score = self.rel_eval.evaluate(run_a_rep)
+                run_b_rep = load_run(run_b_path)
+                run_b_rep_score = evaluate_run(self.measures, self.qrels_orig, run_b_rep)
+                run_a_rep = load_run(run_a_path)
+                run_a_rep_score = evaluate_run(self.measures, self.qrels_orig, run_a_rep)
                 return self._ttest(run_b_score=run_b_rep_score, run_a_score=run_a_rep_score, print_feedback=print_feedback)
             else:
-                with open(run_b_path, 'r') as b_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                    run_b_rep_score = self.rel_eval.evaluate(run_b_rep)
+                run_b_rep = load_run(run_b_path)
+                run_b_rep_score = evaluate_run(self.measures, self.qrels_orig, run_b_rep)
                 return self._ttest(run_b_score=run_b_rep_score, run_a_score=None, print_feedback=print_feedback)
 
         return self._ttest(run_b_score=run_b_score, run_a_score=run_a_score, print_feedback=print_feedback)
@@ -585,34 +499,21 @@ class RplEvaluator(Evaluator):
         @return: If run is specified, a dictionary with the corresponding scores is returned.
         """
         if run or run_path:
-            run = load_run(run_path) if run_path else run
+            run = load_run(run_path) if run_path else run # run_path has priority in case both are provided
             run = break_ties(run)
             if rpl:
-                per_topic_results = pd.DataFrame(ir_measures.calc(self.measures, self.qrels_rpl, run)[1])
+                return evaluate_run(self.measures, self.qrels_rpl, run)
             else:
-                per_topic_results = pd.DataFrame(ir_measures.calc(self.measures, self.qrels_orig, run)[1])
-            return  {
-                qid: dict(zip(g["measure"].astype(str), g["value"]))
-                for qid, g in per_topic_results.groupby("query_id")
-            }
+                return evaluate_run(self.measures, self.qrels_orig, run)
 
         super(RplEvaluator, self).evaluate()
 
         if self.run_b_rep:
             self.run_b_rep = break_ties(self.run_b_rep)
-            per_topic_results = pd.DataFrame(ir_measures.calc(self.measures, self.qrels_rpl, self.run_b_rep)[1])
-            self.run_b_rep_score =  {
-                qid: dict(zip(g["measure"].astype(str), g["value"]))
-                for qid, g in per_topic_results.groupby("query_id")
-            }
+            self.run_b_rep_score = evaluate_run(self.measures, self.qrels_rpl, self.run_b_rep)
         if self.run_a_rep:
             self.run_a_rep = break_ties(self.run_a_rep)
-            per_topic_results = pd.DataFrame(ir_measures.calc(self.measures, self.qrels_rpl, self.run_a_rep)[1])
-            self.run_a_rep_score =  {
-                qid: dict(zip(g["measure"].astype(str), g["value"]))
-                for qid, g in per_topic_results.groupby("query_id")
-            }
-
+            self.run_a_rep_score = evaluate_run(self.measures, self.qrels_rpl, self.run_a_rep)
 
     def ttest(self, run_b_score=None, run_a_score=None, run_b_path=None, run_a_path=None, print_feedback=False):
         """
@@ -632,19 +533,14 @@ class RplEvaluator(Evaluator):
         """
         if run_b_path:
             if run_a_path:
-                with open(run_b_path, 'r') as b_run, open(run_a_path, 'r') as a_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                    run_b_rep_score = self.rel_eval_rpl.evaluate(run_b_rep)
-                    run_a_rep = pytrec_eval.parse_run(a_run)
-                    run_a_rep = {t: run_a_rep[t] for t in sorted(run_a_rep)}
-                    run_a_rep_score = self.rel_eval_rpl.evaluate(run_a_rep)
+                run_b_rep = load_run(run_b_path)
+                run_b_rep_score = evaluate_run(self.measures, self.qrels_rpl, run_b_rep)
+                run_a_rep = load_run(run_a_path)
+                run_a_rep_score = evaluate_run(self.measures, self.qrels_rpl, run_a_rep)
                 return self._ttest(rpd=False, run_b_score=run_b_rep_score, run_a_score=run_a_rep_score, print_feedback=print_feedback)
             else:
-                with open(run_b_path, 'r') as b_run:
-                    run_b_rep = pytrec_eval.parse_run(b_run)
-                    run_b_rep = {t: run_b_rep[t] for t in sorted(run_b_rep)}
-                    run_b_rep_score = self.rel_eval_rpl.evaluate(run_b_rep)
+                run_b_rep = load_run(run_b_path)
+                run_b_rep_score = evaluate_run(self.measures, self.qrels_rpl, run_b_rep)
                 return self._ttest(rpd=False, run_b_score=run_b_rep_score, run_a_score=None, print_feedback=print_feedback)
 
         return self._ttest(rpd=False, run_b_score=run_b_score, run_a_score=run_a_score, print_feedback=print_feedback)

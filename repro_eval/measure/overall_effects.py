@@ -150,7 +150,7 @@ def rel_improve(scores_a, scores_b):
     return dict(_rel_improve(scores_a, scores_b))
 
 
-def _deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
+def _DRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
     """
     Helping function returning a generator for determining the Delta Relative Improvement (DeltaRI).
 
@@ -170,7 +170,7 @@ def _deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
         yield measure, float(ri - rel_improve_rep.get(measure))
 
 
-def deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
+def DRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
     """
     Determines the Delta Relative Improvement (DeltaRI), see also: https://dl.acm.org/doi/10.1145/3397271.3401036
 
@@ -184,4 +184,4 @@ def deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=False):
     @param pbar: Boolean value indicating if progress bar should be printed.
     @return: Dictionary containing the DeltaRI values for the specified run combination.
     """
-    return dict(_deltaRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=pbar))
+    return dict(_DRI(orig_score_a, orig_score_b, rep_score_a, rep_score_b, pbar=pbar))

@@ -1,10 +1,12 @@
 import itertools
-from collections import OrderedDict
+from collections import defaultdict, OrderedDict
 import numpy as np
-from repro_eval import TRIM_THRESH, exclude
+import pandas as pd
+import ir_measures
+from ir_measures import *
 
 
-def trim(run, thresh=TRIM_THRESH):
+def trim_run(run, thresh):
     """
     Use this function to trim a run to a length of a document length specified by thresh.
 
@@ -35,11 +37,9 @@ def _arp_scores(run):
     @param run: The run to be evaluated.
     @return: Generator with ARP scores for each trec_eval evaluation measure.
     """
-    measures_all = list(list(run.values())[0].keys())
-    measures_valid = [m for m in measures_all if m not in exclude]
+    measures = list(list(run.values())[0].keys())
     topics = run.keys()
-
-    for measure in measures_valid:
+    for measure in measures:
         yield measure, np.array(list([run.get(topic).get(measure) for topic in topics])).mean()
 
 
@@ -64,11 +64,9 @@ def _topic_scores(run_scores):
     @param run_scores: The run scores of the previously evaluated run.
     @return: Generator with topic scores for each trec_eval evaluation measure.
     """
-    measures_all = list(list(run_scores.values())[0].keys())
-    measures_valid = [m for m in measures_all if m not in exclude]
+    measures = list(list(run_scores.values())[0].keys())
     topics = run_scores.keys()
-
-    for measure in measures_valid:
+    for measure in measures:
         yield measure, [run_scores.get(topic).get(measure) for topic in topics]
 
 
@@ -125,3 +123,45 @@ def break_ties(run):
             reordered_ranking.extend(sorted(v, reverse=True))
         run[topic] = OrderedDict(reordered_ranking)
     return run
+
+
+def load_run(path): 
+    run = ir_measures.read_trec_run(path)
+    nested_run = defaultdict(dict)
+    for sd in run:
+        nested_run[sd.query_id][sd.doc_id] = sd.score
+    nested_run = dict(nested_run)
+    nested_run = {t: nested_run[t] for t in sorted(nested_run)}
+    return nested_run
+
+
+def load_qrels(path):
+    qrels = ir_measures.read_trec_qrels(path)
+    nested_qrels = defaultdict(dict)
+    for d in qrels:
+        nested_qrels[d.query_id][d.doc_id] = d.relevance
+    nested_qrels = dict(nested_qrels)
+    nested_qrels = {t: nested_qrels[t] for t in sorted(nested_qrels)}
+    return nested_qrels
+
+
+def load_measures():
+    measures = []
+    trec_eval_measures = [
+        'P', 'recall', 'ndcg', 'ndcg_cut', 'map_cut', 
+        'set_map', 'set_P', 'set_relative_P', 'set_recall', 'set_F', 
+        'Rprec', 'infAP', 'bpref', 'recip_rank', 'map', 'iprec_at_recall'
+        # 'num_rel_ret', 'num_ret', 'num_rel', 'num_q', 
+        ]
+    for trec_eval_measure in trec_eval_measures:
+        measures += ir_measures.convert_trec_name(trec_eval_measure) 
+    parsed_measures = [ir_measures.parse_measure(measure) for measure in measures]
+    return parsed_measures
+
+
+def evaluate_run(measures, qrels, run):
+    per_topic_results = pd.DataFrame(ir_measures.calc(measures, qrels, run)[1])
+    return {
+        qid: dict(zip(g["measure"].astype(str), g["value"]))
+        for qid, g in per_topic_results.groupby("query_id")
+    }

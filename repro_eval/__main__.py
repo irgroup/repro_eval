@@ -1,15 +1,15 @@
 """
 Use repro_eval from the command line with e.g.
 
-python -m repro_eval -t rpd -q qrel_orig -r orig_b rpd_b
+python -m repro_eval -t rpd -q qrels_orig -r orig_b rpd_b
 
-python -m repro_eval -t rpd -q qrel_orig -r orig_b orig_a rpd_b rpd_a
+python -m repro_eval -t rpd -q qrels_orig -r orig_b orig_a rpd_b rpd_a
 
-python -m repro_eval -t rpd -m rmse -q qrel_orig -r orig_b rpd_b
+python -m repro_eval -t rpd -m rmse -q qrels_orig -r orig_b rpd_b
 
-python -m repro_eval -t rpl -q qrel_orig qrel_rpl -r orig_b rpl_b
+python -m repro_eval -t rpl -q qrels_orig qrels_rpl -r orig_b rpl_b
 
-python -m repro_eval -t rpl -q qrel_orig qrel_rpl -r orig_b orig_a rpl_b rpl_a
+python -m repro_eval -t rpl -q qrels_orig qrels_rpl -r orig_b orig_a rpl_b rpl_a
 
 after having installed the Python package.
 For other more specific examples also have a look at the README file.
@@ -35,18 +35,16 @@ def main():
 
     if args.type in ['rpd', 'reproducibility']:
         if len(args.runs) == 4:
-            rpd_eval = RpdEvaluator(qrel_orig_path=args.qrels[0],
+            rpd_eval = RpdEvaluator(qrels_orig_path=args.qrels[0],
                                     run_b_orig_path=args.runs[0],
                                     run_a_orig_path=args.runs[1],
                                     run_b_rep_path=args.runs[2],
                                     run_a_rep_path=args.runs[3])
 
         if len(args.runs) == 2:
-            rpd_eval = RpdEvaluator(qrel_orig_path=args.qrels[0],
+            rpd_eval = RpdEvaluator(qrels_orig_path=args.qrels[0],
                                     run_b_orig_path=args.runs[0],
-                                    run_a_orig_path=None,
-                                    run_b_rep_path=args.runs[1],
-                                    run_a_rep_path=None)
+                                    run_b_rep_path=args.runs[1])
 
         rpd_eval.trim()
         rpd_eval.evaluate()
@@ -55,14 +53,10 @@ def main():
 
         # KTU
         if 'ktu' in measure_list or args.measure is None:
-            ktu = rpd_eval.ktau_union()
+            ktu = rpd_eval.ktu()
             print("Kendall's tau Union (KTU)")
             print('------------------------------------------------------------------')
-            for topic, value in ktu.get('baseline').items():
-                value_adv = ktu.get('advanced').get(topic) if ktu.get('advanced') is not None else None
-                print_base_adv(topic, 'KTU', value, value_adv)
-            value_adv = arp(ktu.get('advanced')) if ktu.get('advanced') is not None else None
-            print_base_adv('ARP', 'KTU', arp(ktu.get('baseline')), value_adv)
+            print_base_adv('KTU', 'all', ktu.get('baseline'), ktu.get('advanced'))
             print()
 
         # RBO
@@ -70,11 +64,7 @@ def main():
             rbo = rpd_eval.rbo()
             print("Rank-biased Overlap (RBO)")
             print('------------------------------------------------------------------')
-            for topic, value in rbo.get('baseline').items():
-                value_adv = rbo.get('advanced').get(topic) if rbo.get('advanced') is not None else None
-                print_base_adv(topic, 'RBO', value, value_adv)
-            value_adv = arp(rbo.get('advanced')) if rbo.get('advanced') is not None else None
-            print_base_adv('ARP', 'RBO', arp(rbo.get('baseline')), value_adv)
+            print_base_adv('RBO', 'all', rbo.get('baseline'), rbo.get('advanced'))
             print()
 
         # RMSE
@@ -89,7 +79,7 @@ def main():
 
         # ER
         if 'er' in measure_list or args.measure is None and len(args.runs) == 4:
-            print("Effect ratio (ER)")
+            print("Effect Ratio (ER)")
             print('------------------------------------------------------------------')
             er = rpd_eval.er()
             for measure, value in er.items():
@@ -117,20 +107,20 @@ def main():
 
     if args.type in ['rpl', 'replicability']:
         if len(args.runs) == 4:
-            rpl_eval = RplEvaluator(qrel_orig_path=args.qrels[0],
+            rpl_eval = RplEvaluator(qrels_orig_path=args.qrels[0],
                                     run_b_orig_path=args.runs[0],
                                     run_a_orig_path=args.runs[1],
                                     run_b_rep_path=args.runs[2],
                                     run_a_rep_path=args.runs[3],
-                                    qrel_rpl_path=args.qrels[1])
+                                    qrels_rpl_path=args.qrels[1])
 
         if len(args.runs) == 2:
-            rpl_eval = RplEvaluator(qrel_orig_path=args.qrels[0],
+            rpl_eval = RplEvaluator(qrels_orig_path=args.qrels[0],
                                     run_b_orig_path=args.runs[0],
                                     run_a_orig_path=None,
                                     run_b_rep_path=args.runs[1],
                                     run_a_rep_path=None,
-                                    qrel_rpl_path=args.qrels[1])
+                                    qrels_rpl_path=args.qrels[1])
 
         rpl_eval.trim()
         rpl_eval.evaluate()
@@ -139,7 +129,7 @@ def main():
 
         # ER
         if 'er' in measure_list or args.measure is None and len(args.runs) == 4:
-            print("Effect ratio (ER)")
+            print("Effect Ratio (ER)")
             print('------------------------------------------------------------------')
             er = rpl_eval.er()
             for measure, value in er.items():
