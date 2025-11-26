@@ -12,7 +12,7 @@
 
 If you open the [interactive Google Colab notebook](https://colab.research.google.com/github/irgroup/repro_eval/blob/master/examples/notebooks/ecir21-demo.ipynb), you’ll find a hands‑on demo of **`repro_eval`**. The notebook ships with sample data, but you can also load any TREC‑format run file to try it out with your own results.  
 
-For a visual walkthrough, see the :movie_camera: [video demonstration](https://www.youtube.com/watch?v=NqtUvsqkvmQ).
+For a visual walkthrough, see the :movie_camera: [video demonstration](https://www.youtube.com/watch?v=NqtUvsqkvmQ).
 
 ### Setup
 Install via [PyPI](https://pypi.org/project/repro-eval):
