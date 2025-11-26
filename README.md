@@ -10,7 +10,7 @@
 
 ## Demonstration | :movie_camera: [Video](https://www.youtube.com/watch?v=NqtUvsqkvmQ)
 
-If you follow this [link](https://colab.research.google.com/github/irgroup/repro_eval/blob/master/example/demo.ipynb), you will be provided with an interactive Google Colab demonstration of `repro_eval`. The demo includes example data, but is also runnable with other results in TREC run file syntax. Alternatively, please have a look at the [video demonstration](https://www.youtube.com/watch?v=NqtUvsqkvmQ).
+If you follow this [link](./examples/noteboosk/ecir21-demo.ipynb), you will be provided with an interactive Google Colab demonstration of `repro_eval`. The demo includes example data, but is also runnable with other results in TREC run file syntax. Alternatively, please have a look at the [video demonstration](https://www.youtube.com/watch?v=NqtUvsqkvmQ).
 
 ### Setup
 Install via [PyPI](https://pypi.org/project/repro-eval):
