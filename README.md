@@ -6,21 +6,7 @@
 [![PyPI version](https://badge.fury.io/py/repro-eval.svg)](https://badge.fury.io/py/repro-eval)
 [![doi](http://img.shields.io/badge/doi-10.1007%2F978--3--030--72240--1__51-blue.svg?style=flat)](https://doi.org/10.1007/978-3-030-72240-1_51)
 
-`repro_eval` is a collection of measures to evaluate the reproducibility/replicability of system-oriented IR experiments. The measures were described and compared in this paper:
-
-  ```
- @inproceedings{10.1145/3397271.3401036, 
-     author = {Breuer, Timo and Ferro, Nicola and Fuhr, Norbert and Maistro, Maria and Sakai, Tetsuya and Schaer, Philipp and Soboroff, Ian}, 
-     title = {How to Measure the Reproducibility of System-Oriented IR Experiments}, 
-     year = {2020},     
-     publisher = {Association for Computing Machinery}, 
-     address = {New York, NY, USA},     
-     doi = {10.1145/3397271.3401036}, 
-     booktitle = {Proceedings of the 43rd International ACM SIGIR Conference on Research and Development in Information Retrieval}, 
-     pages = {349–358}, 
-     series = {SIGIR '20} 
- }
- ```
+`repro_eval` is a collection of measures to evaluate the reproducibility/replicability of system-oriented IR experiments. 
 
 ## Demonstration | :movie_camera: [Video](https://www.youtube.com/watch?v=NqtUvsqkvmQ)
 
@@ -1182,3 +1168,19 @@ If you use `repro_eval` in your work, please cite it as follows:
      series = {Lecture Notes in Computer Science}
  }
 ```
+
+The measures were described and analyzed in this paper:
+
+  ```
+ @inproceedings{10.1145/3397271.3401036, 
+     author = {Breuer, Timo and Ferro, Nicola and Fuhr, Norbert and Maistro, Maria and Sakai, Tetsuya and Schaer, Philipp and Soboroff, Ian}, 
+     title = {How to Measure the Reproducibility of System-Oriented IR Experiments}, 
+     year = {2020},     
+     publisher = {Association for Computing Machinery}, 
+     address = {New York, NY, USA},     
+     doi = {10.1145/3397271.3401036}, 
+     booktitle = {Proceedings of the 43rd International ACM SIGIR Conference on Research and Development in Information Retrieval}, 
+     pages = {349–358}, 
+     series = {SIGIR '20} 
+ }
+ ```
