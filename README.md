@@ -27,8 +27,7 @@ pip install git+https://github.com/irgroup/repro_eval.git
 
 Alternatively, download the repository and it install with:
 ```
-git clone https://github.com/irgroup/repro_eval
-pip install repro_eval/
+git clone https://github.com/irgroup/repro_eval && pip install repro_eval/
 ```
 
 ### Download example data, install additional packages
