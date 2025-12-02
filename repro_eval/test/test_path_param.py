@@ -13,7 +13,7 @@ rpd_eval.evaluate()
 
 
 def test_ktu_path_param():
-    ktu = rpd_eval.ktau_union()
+    ktu = rpd_eval.ktu()
     assert 'baseline' in ktu.keys()
     assert 'advanced' in ktu.keys()
 
@@ -23,11 +23,11 @@ def test_ktu_path_param():
     _rpd_eval.trim()
     _rpd_eval.evaluate()
 
-    _ktu = _rpd_eval.ktau_union(run_b_path='./example/rpd_b.txt')
+    _ktu = _rpd_eval.ktu(run_b_path='./example/rpd_b.txt')
     assert 'baseline' in _ktu.keys()
     assert ktu.get('baseline') == _ktu.get('baseline')
 
-    _ktu = _rpd_eval.ktau_union(run_b_path='./example/rpd_b.txt', run_a_path='./example/rpd_a.txt')
+    _ktu = _rpd_eval.ktu(run_b_path='./example/rpd_b.txt', run_a_path='./example/rpd_a.txt')
     assert 'advanced' in _ktu.keys()
     assert ktu.get('advanced') == _ktu.get('advanced')
 
