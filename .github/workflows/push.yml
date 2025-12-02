@@ -23,7 +23,7 @@ jobs:
         wget -O "./example/qrels/core17.txt" https://trec.nist.gov/data/core/qrels.txt
         wget -O "./example/qrels/core18.txt" https://trec.nist.gov/data/core/qrels2018.txt
         python -m pip install --upgrade pip
-        python -m pip install pytest pytrec_eval numpy scipy tqdm pytrec_eval_terrier ir-measures[pytrec_eval]
+        python -m pip install pytest pytrec_eval numpy scipy tqdm pandas pytrec_eval_terrier ir-measures[pytrec_eval]
     - name: Test with pytest
       run: |
         pytest
