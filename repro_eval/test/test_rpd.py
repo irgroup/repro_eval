@@ -12,7 +12,7 @@ rpd_eval.evaluate()
 
 
 def test_ktu():
-    ktu = rpd_eval.ktau_union()
+    ktu = rpd_eval.ktu()
     assert 'baseline' in ktu.keys()
     assert 'advanced' in ktu.keys()
 

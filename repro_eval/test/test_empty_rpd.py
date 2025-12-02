@@ -10,7 +10,7 @@ rpd_eval = RpdEvaluator(qrel_orig_path=None,
 
 
 def test_ktu(capfd):
-    assert None is rpd_eval.ktau_union()
+    assert None is rpd_eval.ktu()
     out, err = capfd.readouterr()
     assert out == ''.join([ERR_MSG, '\n'])
 
