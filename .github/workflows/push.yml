@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9, 3.10, 3.11, 3.12, 3.13]
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
     - uses: actions/checkout@v2
@@ -20,7 +20,7 @@ jobs:
       run: |
         wget -P example/ https://gist.githubusercontent.com/breuert/95d01401a1ea767ca83592beeb8d7785/raw/9073fc0dd3cd118655f9a7e4f74116dd8da09df0/orig_b.txt https://gist.githubusercontent.com/breuert/c71c2c6bad1cda7ed121bb7d0f64e471/raw/d54404d960a0decddda1f19711d4cffc71614ecf/orig_a.txt https://gist.githubusercontent.com/breuert/5973d391a4bc38643264366299e2c3de/raw/d9d5eeeecffc9861113a1eeb044fc225da4e0f00/rpd_b.txt https://gist.githubusercontent.com/breuert/8e9bfb7aac30fa044da23fdd95174b92/raw/e1f1d1a84d9a8834a4d25f772ee409ada42b5eaa/rpd_a.txt https://gist.githubusercontent.com/breuert/a39373be8ec0e0b15844dcfe9f26f8cc/raw/ad2ea6db8ff1bec3a3ca6d488c3bbcc13ca1b05b/rpl_b.txt https://gist.githubusercontent.com/breuert/14d5eef9a1d51e337a4c3cd44f5212a3/raw/50f2f21c5902ed13f7550d0e588fada7015089ab/rpl_a.txt
         python -m pip install --upgrade pip
-        python -m pip install pytest pytrec_eval numpy scipy tqdm
+        python -m pip install pytest pytrec_eval numpy scipy tqdm pytrec_eval_terrier ir-measures[pytrec_eval]
     - name: Test with pytest
       run: |
         pytest
