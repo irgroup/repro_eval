@@ -3,7 +3,7 @@ import pytrec_eval
 from repro_eval.Evaluator import RpdEvaluator
 
 
-rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+rpd_eval = RpdEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                         run_b_orig_path='./example/orig_b.txt',
                         run_a_orig_path='./example/orig_a.txt',
                         run_b_rep_path='./example/rpd_b.txt',

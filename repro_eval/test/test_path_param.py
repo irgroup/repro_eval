@@ -2,7 +2,7 @@ import pytest
 from repro_eval.Evaluator import RpdEvaluator, RplEvaluator
 import numpy as np
 
-rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+rpd_eval = RpdEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                         run_b_orig_path='./example/orig_b.txt',
                         run_a_orig_path='./example/orig_a.txt',
                         run_b_rep_path='./example/rpd_b.txt',
@@ -17,7 +17,7 @@ def test_ktu_path_param():
     assert 'baseline' in ktu.keys()
     assert 'advanced' in ktu.keys()
 
-    _rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    _rpd_eval = RpdEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                             run_b_orig_path='./example/orig_b.txt',
                             run_a_orig_path='./example/orig_a.txt')
     _rpd_eval.trim()
@@ -37,7 +37,7 @@ def test_rbo_path_param():
     assert 'baseline' in rbo.keys()
     assert 'advanced' in rbo.keys()
 
-    _rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    _rpd_eval = RpdEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                              run_b_orig_path='./example/orig_b.txt',
                              run_a_orig_path='./example/orig_a.txt')
     _rpd_eval.trim()
@@ -57,7 +57,7 @@ def test_rmse_path_param():
     assert 'baseline' in rmse.keys()
     assert 'advanced' in rmse.keys()
 
-    _rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    _rpd_eval = RpdEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                              run_b_orig_path='./example/orig_b.txt',
                              run_a_orig_path='./example/orig_a.txt')
     _rpd_eval.trim()
@@ -77,7 +77,7 @@ def test_rpd_ttest_path_param():
     assert 'baseline' in pval.keys()
     assert 'advanced' in pval.keys()
 
-    _rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    _rpd_eval = RpdEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                              run_b_orig_path='./example/orig_b.txt',
                              run_a_orig_path='./example/orig_a.txt')
     _rpd_eval.trim()
@@ -99,12 +99,12 @@ def test_rpd_ttest_path_param():
 
 
 def test_rpl_ttest_path_param():
-    rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    rpl_eval = RplEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                             run_b_orig_path='./example/orig_b.txt',
                             run_a_orig_path='./example/orig_a.txt',
                             run_b_rep_path='./example/rpl_b.txt',
                             run_a_rep_path='./example/rpl_a.txt',
-                            qrel_rpl_path='./example/data/qrels/core18.txt')
+                            qrels_rpl_path='./example/qrels/core18.txt')
 
     rpl_eval.trim()
     rpl_eval.evaluate()
@@ -113,10 +113,10 @@ def test_rpl_ttest_path_param():
     assert 'baseline' in pval.keys()
     assert 'advanced' in pval.keys()
 
-    _rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    _rpl_eval = RplEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                              run_b_orig_path='./example/orig_b.txt',
                              run_a_orig_path='./example/orig_a.txt',
-                             qrel_rpl_path='./example/data/qrels/core18.txt')
+                             qrels_rpl_path='./example/qrels/core18.txt')
     _rpl_eval.trim()
     _rpl_eval.evaluate()
 
@@ -138,7 +138,7 @@ def test_rpl_ttest_path_param():
 def test_rpd_er_path_param():
     er = rpd_eval.er()
 
-    _rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    _rpd_eval = RpdEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                              run_b_orig_path='./example/orig_b.txt',
                              run_a_orig_path='./example/orig_a.txt')
     _rpd_eval.trim()
@@ -153,22 +153,22 @@ def test_rpd_er_path_param():
 
 
 def test_rpl_er_path_param():
-    rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    rpl_eval = RplEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                             run_b_orig_path='./example/orig_b.txt',
                             run_a_orig_path='./example/orig_a.txt',
                             run_b_rep_path='./example/rpl_b.txt',
                             run_a_rep_path='./example/rpl_a.txt',
-                            qrel_rpl_path='./example/data/qrels/core18.txt')
+                            qrels_rpl_path='./example/qrels/core18.txt')
 
     rpl_eval.trim()
     rpl_eval.evaluate()
 
     er = rpl_eval.er()
 
-    _rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    _rpl_eval = RplEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                              run_b_orig_path='./example/orig_b.txt',
                              run_a_orig_path='./example/orig_a.txt',
-                             qrel_rpl_path='./example/data/qrels/core18.txt')
+                             qrels_rpl_path='./example/qrels/core18.txt')
     _rpl_eval.trim()
     _rpl_eval.evaluate()
 
@@ -183,7 +183,7 @@ def test_rpl_er_path_param():
 def test_rpd_dri_path_param():
     dri = rpd_eval.dri()
 
-    _rpd_eval = RpdEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    _rpd_eval = RpdEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                              run_b_orig_path='./example/orig_b.txt',
                              run_a_orig_path='./example/orig_a.txt')
     _rpd_eval.trim()
@@ -198,22 +198,22 @@ def test_rpd_dri_path_param():
 
 
 def test_rpl_dri_path_param():
-    rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    rpl_eval = RplEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                             run_b_orig_path='./example/orig_b.txt',
                             run_a_orig_path='./example/orig_a.txt',
                             run_b_rep_path='./example/rpl_b.txt',
                             run_a_rep_path='./example/rpl_a.txt',
-                            qrel_rpl_path='./example/data/qrels/core18.txt')
+                            qrels_rpl_path='./example/qrels/core18.txt')
 
     rpl_eval.trim()
     rpl_eval.evaluate()
 
     dri = rpl_eval.dri()
 
-    _rpl_eval = RplEvaluator(qrel_orig_path='./example/data/qrels/core17.txt',
+    _rpl_eval = RplEvaluator(qrels_orig_path='./example/qrels/core17.txt',
                              run_b_orig_path='./example/orig_b.txt',
                              run_a_orig_path='./example/orig_a.txt',
-                             qrel_rpl_path='./example/data/qrels/core18.txt')
+                             qrels_rpl_path='./example/qrels/core18.txt')
     _rpl_eval.trim()
     _rpl_eval.evaluate()
 
