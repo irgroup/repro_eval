@@ -11,3 +11,10 @@ example/rpd_a.txt
 example/rpd_b.txt
 example/rpl_a.txt
 example/rpl_b.txt
+
+.venv/
+.DS_Store
+main.ipynb
+runs/
+qrels
+bin/

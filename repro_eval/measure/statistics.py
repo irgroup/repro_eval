@@ -20,7 +20,7 @@ def _ttest(orig_score, rep_score, rpd=True, pbar=False):
         generator = tqdm(topic_scores_orig.items()) if pbar else topic_scores_orig.items()
 
         for measure, scores in generator:
-            yield measure, ttest_rel(scores, topic_scores_rep.get(measure)).pvalue
+            yield measure, float(ttest_rel(scores, topic_scores_rep.get(measure)).pvalue)
 
     else:  # else unpaired two-tailed t-test
         topic_scores_orig = topic_scores(orig_score)
@@ -29,7 +29,7 @@ def _ttest(orig_score, rep_score, rpd=True, pbar=False):
         generator = tqdm(topic_scores_orig.items()) if pbar else topic_scores_orig.items()
 
         for measure, scores in generator:
-            yield measure, ttest_ind(scores, topic_scores_rep.get(measure)).pvalue
+            yield measure, float(ttest_ind(scores, topic_scores_rep.get(measure)).pvalue)
 
 
 def ttest(orig_score, rep_score, rpd=True, pbar=False):

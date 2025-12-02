@@ -6,30 +6,18 @@
 [![PyPI version](https://badge.fury.io/py/repro-eval.svg)](https://badge.fury.io/py/repro-eval)
 [![doi](http://img.shields.io/badge/doi-10.1007%2F978--3--030--72240--1__51-blue.svg?style=flat)](https://doi.org/10.1007/978-3-030-72240-1_51)
 
-`repro_eval` is a collection of measures to evaluate the reproducibility/replicability of system-oriented IR experiments. The measures were described and compared in this paper:
+`repro_eval` is a collection of measures to evaluate the reproducibility/replicability of system-oriented IR experiments. 
 
-  ```
- @inproceedings{10.1145/3397271.3401036, 
-     author = {Breuer, Timo and Ferro, Nicola and Fuhr, Norbert and Maistro, Maria and Sakai, Tetsuya and Schaer, Philipp and Soboroff, Ian}, 
-     title = {How to Measure the Reproducibility of System-Oriented IR Experiments}, 
-     year = {2020},     
-     publisher = {Association for Computing Machinery}, 
-     address = {New York, NY, USA},     
-     doi = {10.1145/3397271.3401036}, 
-     booktitle = {Proceedings of the 43rd International ACM SIGIR Conference on Research and Development in Information Retrieval}, 
-     pages = {349–358}, 
-     series = {SIGIR '20} 
- }
- ```
+## Demonstration
 
-## Demonstration | :movie_camera: [Video](https://www.youtube.com/watch?v=NqtUvsqkvmQ)
+If you open the [interactive Google Colab notebook](https://colab.research.google.com/github/irgroup/repro_eval/blob/master/examples/notebooks/ecir21-demo.ipynb), you’ll find a hands‑on demo of **`repro_eval`**. The notebook ships with sample data, but you can also load any TREC‑format run file to try it out with your own results.  
 
-If you follow this [link](https://colab.research.google.com/github/irgroup/repro_eval/blob/master/example/demo.ipynb), you will be provided with an interactive Google Colab demonstration of `repro_eval`. The demo includes example data, but is also runnable with other results in TREC run file syntax. Alternatively, please have a look at the [video demonstration](https://www.youtube.com/watch?v=NqtUvsqkvmQ).
+For a visual walkthrough, see the :movie_camera: [video demonstration](https://www.youtube.com/watch?v=NqtUvsqkvmQ).
 
 ### Setup
 Install via [PyPI](https://pypi.org/project/repro-eval):
 ```
-pip install repro_eval==0.4.0
+pip install repro_eval
 ```
 
 Install via GitHub repository:
@@ -39,58 +27,59 @@ pip install git+https://github.com/irgroup/repro_eval.git
 
 Alternatively, download the repository and it install with:
 ```
-git clone https://github.com/irgroup/repro_eval
-pip install repro_eval/
+git clone https://github.com/irgroup/repro_eval && pip install repro_eval/
 ```
+
+### Download example data, install additional packages
 
 Some of the examples include plots and visualizations. Install the required packages with:
 ```
-pip install -r example/requirements.txt
+pip install -r examples/requirements.txt
 ```
 
 Download sample data (requires **`wget`** and **`tar`**):
 ```
-./example/get_data.sh
+./examples/scripts/get_data.sh
 ```
 
-### Interface 
+### Command line interface 
 
-##### Reproducibility test for single run:  
+#### Reproducibility test for single run:  
 `python -m repro_eval --type reproducibility --qrels qrel_orig --runs orig_b rpd_b`
 
 Alternative short version:  
 `python -m repro_eval -t rpd -q qrel_orig -r orig_b rpd_b`
 
-##### Reproducibility test for baseline and advanced run:  
+#### Reproducibility test for baseline and advanced run:  
 `python -m repro_eval --type rpd --qrels qrel_orig --runs orig_b orig_a rpd_b rpd_a`
 
 Alternative short version:  
 `python -m repro_eval -t rpd -q qrel_orig -r orig_b orig_a rpd_b rpd_a`
 
-##### Reproducibility test for single run with specific measure:  
+#### Reproducibility test for single run with specific measure:  
 `python -m repro_eval --type rpd --measure rmse --qrels qrel_orig --runs orig_b rpd_b`  
 whereas the measure can be `ktu`, `rmse`, `er`, `dri`, `ttest`.
 
 Alternative short version:  
 `python -m repro_eval -t rpd -m rmse -q qrel_orig -r orig_b rpd_b` 
 
-##### Replicability test for single run:  
+#### Replicability test for single run:  
 `python -m repro_eval --type rpl --qrels qrel_orig qrel_rpl --runs orig_b rpl_b`
 
 Alternative short version:  
 `python -m repro_eval -t rpl -q qrel_orig qrel_rpl -r orig_b rpl_b`
 
-##### Replicability test for baseline and advanced run:  
+#### Replicability test for baseline and advanced run:  
 `python -m repro_eval --type rpl --qrels qrel_orig qrel_rpl --runs orig_b orig_a rpl_b rpl_a`
 
 Alternative short version:  
 `python -m repro_eval -t rpl -q qrel_orig qrel_rpl -r orig_b orig_a rpl_b rpl_a`
 
-##### Example 
+#### Example 
 
 Reproducibility (full, all measures):  
 ```commandline
-python -m repro_eval --type reproducibility --qrels ./example/data/qrels/core17.txt --runs ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001 ./example/data/runs/rpd/14/irc_task1_WCrobust0405_001
+python -m repro_eval --type reproducibility --qrels ./qrels/core17.txt --runs ./runs/orig/input.WCrobust04 ./runs/orig/input.WCrobust0405 ./runs/rpd/14/irc_task1_WCrobust04_001 ./runs/rpd/14/irc_task1_WCrobust0405_001
 ```
 <details>
 <summary>Output</summary>
@@ -572,7 +561,7 @@ set_F                    PVAL    BASE    0.6768    ADV     0.7968
 
 Reproducibility (full, RMSE):  
 ```commandline
-python -m repro_eval --type reproducibility --measure rmse --qrels ./example/data/qrels/core17.txt --runs ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001 ./example/data/runs/rpd/14/irc_task1_WCrobust0405_001
+python -m repro_eval --type reproducibility --measure rmse --qrels ./qrels/core17.txt --runs ./runs/orig/input.WCrobust04 ./runs/orig/input.WCrobust0405 ./runs/rpd/14/irc_task1_WCrobust04_001 ./runs/rpd/14/irc_task1_WCrobust0405_001
 ```
 <details>
 <summary>Output</summary>
@@ -674,7 +663,7 @@ set_F                    RMSE    BASE    0.0288    ADV     0.0156
 
 Reproducibility (baseline only, RMSE):  
 ```commandline
-python -m repro_eval --type reproducibility --measure rmse --qrels ./example/data/qrels/core17.txt --runs ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpd/14/irc_task1_WCrobust04_001
+python -m repro_eval --type reproducibility --measure rmse --qrels ./qrels/core17.txt --runs ./runs/orig/input.WCrobust04 ./runs/rpd/14/irc_task1_WCrobust04_001
 ```
 
 <details>
@@ -776,7 +765,7 @@ set_F                    RMSE    BASE    0.0288
 
 Replicability (full):  
 ```commandline
-python -m repro_eval --type replicability --qrels ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt --runs ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/orig/input.WCrobust0405 ./example/data/runs/rpl/14/irc_task2_WCrobust04_001 ./example/data/runs/rpl/14/irc_task2_WCrobust0405_001
+python -m repro_eval --type replicability --qrels ./qrels/core17.txt ./qrels/core18.txt --runs ./runs/orig/input.WCrobust04 ./runs/orig/input.WCrobust0405 ./runs/rpl/14/irc_task2_WCrobust04_001 ./runs/rpl/14/irc_task2_WCrobust0405_001
 ```
 
 <details>
@@ -1060,7 +1049,7 @@ set_F                    PVAL    BASE    0.0002    ADV     0.0001
 
 Replicability (baseline only):  
 ```commandline
-python -m repro_eval --type replicability --qrels ./example/data/qrels/core17.txt ./example/data/qrels/core18.txt --runs ./example/data/runs/orig/input.WCrobust04 ./example/data/runs/rpl/14/irc_task2_WCrobust04_001
+python -m repro_eval --type replicability --qrels ./qrels/core17.txt ./qrels/core18.txt --runs ./runs/orig/input.WCrobust04 ./runs/rpl/14/irc_task2_WCrobust04_001
 ```
 
 <details>
@@ -1160,12 +1149,6 @@ set_F                    PVAL    BASE    0.0002
 ```
 </details>
 
-### Misc. & Links
-
-We use the implementation of the Rank-biased Overlap (RBO) by [dlukes](https://github.com/dlukes) at [620b84e](https://github.com/dlukes/rbo/tree/620b84e55e8b596e7fd9005cc8ca4b7a8522f2d6).
-We build up on the [pytrec_eval](https://github.com/cvangysel/pytrec_eval) interface for the underlying IR measures.
-We benefited from these codebases a lot and would like to express our gratitude for authors of these repositories.
-
 ### Citation
 
 If you use `repro_eval` in your work, please cite it as follows:
@@ -1182,3 +1165,19 @@ If you use `repro_eval` in your work, please cite it as follows:
      series = {Lecture Notes in Computer Science}
  }
 ```
+
+The measures were described and analyzed in this paper:
+
+  ```
+ @inproceedings{10.1145/3397271.3401036, 
+     author = {Breuer, Timo and Ferro, Nicola and Fuhr, Norbert and Maistro, Maria and Sakai, Tetsuya and Schaer, Philipp and Soboroff, Ian}, 
+     title = {How to Measure the Reproducibility of System-Oriented IR Experiments}, 
+     year = {2020},     
+     publisher = {Association for Computing Machinery}, 
+     address = {New York, NY, USA},     
+     doi = {10.1145/3397271.3401036}, 
+     booktitle = {Proceedings of the 43rd International ACM SIGIR Conference on Research and Development in Information Retrieval}, 
+     pages = {349–358}, 
+     series = {SIGIR '20} 
+ }
+ ```
